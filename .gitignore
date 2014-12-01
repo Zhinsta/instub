@@ -20,4 +20,4 @@ tags
 public/node_modules
 
 # app
-instub/settings_local.py
+instub/config_local.py
