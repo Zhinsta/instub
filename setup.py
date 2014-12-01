@@ -20,6 +20,7 @@ install_requires = [
 
 entry_points = {
     'console_scripts': [
+        'run = instub.runserver:main',
     ]
 }
 
