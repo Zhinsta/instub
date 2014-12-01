@@ -7,7 +7,7 @@ bin/
 parts/
 eggs/
 develop-eggs/
-zhinsta.egg-info/
+instub.egg-info/
 
 # editor
 *.sw[po]

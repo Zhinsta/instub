@@ -1,8 +1,0 @@
-setup.py
-instub/__init__.py
-instub.egg-info/PKG-INFO
-instub.egg-info/SOURCES.txt
-instub.egg-info/dependency_links.txt
-instub.egg-info/entry_points.txt
-instub.egg-info/requires.txt
-instub.egg-info/top_level.txt
