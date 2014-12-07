@@ -1,0 +1,8 @@
+<html>
+<body>
+{% for user in users %}
+{{ user.name }}
+{% endfor %}
+{{ pager()|safe }}
+</body>
+</html>
