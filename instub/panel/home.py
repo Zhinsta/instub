@@ -3,6 +3,8 @@
 from flask import views
 from flask import request
 from flask import render_template
+from flask import current_app
+from flask.ext.login import login_required, current_user
 
 from instub.models import User
 from instub.pager import Pager
@@ -12,6 +14,7 @@ class Home(views.MethodView):
 
     template = '/panel/users.html'
 
+    @login_required
     def get(self):
         query = User.query
         pager = Pager(query.count())

@@ -1,8 +1,13 @@
-<html>
-<body>
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<p>welcome {{ current_user.name }}</p>
+<ul>
 {% for user in users %}
-{{ user.name }}
+<li>{{ user.name }}</li>
 {% endfor %}
+</ul>
 {{ pager()|safe }}
-</body>
-</html>
+
+{% endblock  %}

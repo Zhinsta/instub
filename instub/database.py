@@ -68,7 +68,7 @@ class SurrogatePK(object):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.String(128), primary_key=True, autoincrement=False,
-                   server_default=generat_id())
+                   default=generat_id)
 
     @classmethod
     def get_by_id(cls, id):

@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 
+from flask.ext.login import UserMixin
 from instub.database import db, SurrogatePK, Model
 
+from instub.utils import login_manager
 
-class User(SurrogatePK, Model):
 
-    __tablename__ = 'user'
+@login_manager.user_loader
+def get_user(id):
+    user = User.query.get(int(id))
+    return user
+
+
+class Account(SurrogatePK, Model):
+
+    __tablename__ = 'account'
 
     name = db.Column(db.String(128), nullable=False)
     avatar = db.Column(db.String(255), nullable=False)
@@ -15,13 +24,14 @@ class User(SurrogatePK, Model):
                              server_default=db.func.current_timestamp())
 
 
-class Admin(SurrogatePK, Model):
+class User(UserMixin, SurrogatePK, Model):
 
-    __tablename__ = 'admin'
+    __tablename__ = 'user'
     __table_args__ = (
-        db.Index('ix_admin_email_password', 'email', 'password'),
+        db.Index('ix_user_email_password', 'email', 'password'),
     )
 
+    name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False, unique=True)
     mobile = db.Column(db.String(128), nullable=True)
     password = db.Column(db.String(128), nullable=False)
