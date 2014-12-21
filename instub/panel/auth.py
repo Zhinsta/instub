@@ -7,13 +7,14 @@ from flask import flash
 from flask import views
 from flask import redirect
 from flask import url_for
-from flask import Blueprint
 from flask import render_template
 
-from flask.ext.login import login_user, logout_user, login_required, current_user
+from flask.ext.login import login_user, logout_user
+from flask.ext.login import login_required, current_user
 
-from .forms import LoginForm, AddAdminForm
-from instub.models import User
+from .forms import LoginForm, AddAdminForm, EditAdminForm
+from instub.models import Admin
+from instub.utils import notfound
 
 
 class Login(views.MethodView):
@@ -33,13 +34,13 @@ class Login(views.MethodView):
             email = form.email.data
             password = form.password.data
             password = md5('instub%s' % password).hexdigest()
-            user = (User.query
-                    .filter(User.email == email)
-                    .filter(User.password == password)
-                    .first())
-            if not user:
+            admin = (Admin.query
+                     .filter(Admin.email == email)
+                     .filter(Admin.password == password)
+                     .first())
+            if not admin:
                 return render_template("login.html", form=form)
-            login_user(user)
+            login_user(admin)
             flash("Logged in successfully.")
             return redirect(request.args.get("next") or url_for("panel.index"))
         return render_template(self.template, form=form)
@@ -52,23 +53,51 @@ class Logout(views.MethodView):
         return redirect(url_for('panel.login'))
 
 
-class AddAdmin(views.MethodView):
+class AdminEdit(views.MethodView):
 
     template = '/panel/add_admin.html'
 
     @login_required
-    def get(self):
-        form = AddAdminForm()
+    def get(self, id=None):
+        if id:
+            admin = Admin.query.get(id)
+            if not admin:
+                return notfound('admin not exists')
+            form = EditAdminForm(name=admin.name,
+                                 email=admin.email,
+                                 mobile=admin.mobile,
+                                 password=admin.password)
+        else:
+            form = AddAdminForm()
         return render_template(self.template, form=form)
 
-    @login_required
-    def post(self):
+    def update_admin(self, id):
+        admin = Admin.query.get(id)
+        if not admin:
+            return notfound('admin not exists')
+        form = EditAdminForm()
+        if form.validate_on_submit():
+            password = md5('instub%s' % form.password.data).hexdigest()
+            admin.update(name=form.name.data,
+                         email=form.email.data,
+                         mobile=form.mobile.data,
+                         password=password)
+            return redirect(request.args.get("next") or url_for("panel.index"))
+        return render_template(self.template, form=form)
+
+    def add_admin(self):
         form = AddAdminForm()
         if form.validate_on_submit():
             password = md5('instub%s' % form.password.data).hexdigest()
-            user = User.create(name=form.name.data,
-                               email=form.email.data,
-                               mobile=form.mobile.data,
-                               password=password)
+            Admin.create(name=form.name.data,
+                         email=form.email.data,
+                         mobile=form.mobile.data,
+                         password=password)
             return redirect(request.args.get("next") or url_for("panel.index"))
         return render_template(self.template, form=form)
+
+    @login_required
+    def post(self, id=None):
+        if id:
+            return self.update_admin(id)
+        return self.add_admin()

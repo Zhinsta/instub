@@ -8,13 +8,26 @@ from instub.utils import login_manager
 
 @login_manager.user_loader
 def get_user(id):
-    user = User.query.get(int(id))
-    return user
+    admin = Admin.query.get(int(id))
+    return admin
 
 
-class Account(SurrogatePK, Model):
+class SiteSetting(SurrogatePK, Model):
 
-    __tablename__ = 'account'
+    __tablename__ = 'site_setting'
+
+    name = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), nullable=False)
+    keywords = db.Column(db.String(255), nullable=False)
+    slogan = db.Column(db.String(255), nullable=False)
+    created_time = db.Column(db.DateTime(timezone=True),
+                             index=True, nullable=False,
+                             server_default=db.func.current_timestamp())
+
+
+class User(SurrogatePK, Model):
+
+    __tablename__ = 'user'
 
     name = db.Column(db.String(128), nullable=False)
     avatar = db.Column(db.String(255), nullable=False)
@@ -24,11 +37,11 @@ class Account(SurrogatePK, Model):
                              server_default=db.func.current_timestamp())
 
 
-class User(UserMixin, SurrogatePK, Model):
+class Admin(UserMixin, SurrogatePK, Model):
 
-    __tablename__ = 'user'
+    __tablename__ = 'admin'
     __table_args__ = (
-        db.Index('ix_user_email_password', 'email', 'password'),
+        db.Index('ix_admin_email_password', 'email', 'password'),
     )
 
     name = db.Column(db.String(128), nullable=False)
@@ -50,10 +63,26 @@ class Category(SurrogatePK, Model):
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
 
+    @classmethod
+    def __declare_last__(cls):
+        cls.workers = db.relationship(
+            'Worker',
+            secondary=WorkerCategory.__table__,
+            backref=db.backref(
+                'categories',
+                innerjoin=True,
+                order_by=Worker.created_time.desc(),
+                lazy='dynamic',),
+            primaryjoin=cls.id == WorkerCategory.category_id,
+            secondaryjoin=WorkerCategory.worker_id == Worker.id,
+            order_by=WorkerCategory.created_time.desc(),
+            foreign_keys=[WorkerCategory.category_id, WorkerCategory.worker_id],
+            passive_deletes='all', lazy='dynamic')
+
 
 class Worker(Model):
 
-    __tablename__ = 'woker'
+    __tablename__ = 'worker'
 
     id = db.Column(db.String(128), primary_key=True, autoincrement=False)
     user_name = db.Column(db.String(128), index=True, nullable=False)
@@ -69,7 +98,7 @@ class Worker(Model):
 
 class WorkerCategory(Model):
 
-    __tablename__ = 'woker_category'
+    __tablename__ = 'worker_category'
 
     worker_id = db.Column(db.String(128), primary_key=True)
     category_id = db.Column(db.String(128), primary_key=True)
@@ -78,7 +107,7 @@ class WorkerCategory(Model):
                              server_default=db.func.current_timestamp())
 
 
-class media(Model):
+class Media(Model):
 
     __tablename__ = 'media'
 

@@ -3,6 +3,7 @@
 {% block content %}
 
 <p>welcome {{ current_user.name }}</p>
+<li>{{ current_user.id }}</li>
 <ul>
 {% for user in users %}
 <li>{{ user.name }}</li>

@@ -12,6 +12,9 @@ class Pagination(object):
         self.current_page = page
         self.per_page = per_page
         self.total_count = total_count
+        print per_page
+        print page
+        print total_count
 
     @property
     def offset(self):
@@ -52,8 +55,8 @@ class Pager(object):
     def __init__(self, total_count, per_page=20):
         self.per_page = per_page
         self.total_count = total_count
-        self.url = request.url
-        self.current_page = request.args.get('page', 1)
+        self.url = request.base_url
+        self.current_page = int(request.args.get('page', 1))
         self.pagination = Pagination(
             self.current_page, self.total_count, self.per_page)
         self.offset = self.pagination.offset
@@ -62,8 +65,9 @@ class Pager(object):
         pagers = []
         for page in self.pagination.iter_pages():
             url = None
+            print self.url
             if page is not None:
                 url = '%s?page=%s' % (self.url, page)
             pagers.append({'url': url,
                            'page': page})
-        return render_template(self.template, pagres=pagers)
+        return render_template(self.template, pagers=pagers)

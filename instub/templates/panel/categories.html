@@ -1,0 +1,14 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<p>welcome {{ current_user.name }}</p>
+<a href="{{ url_for('panel.category_add') }}"> add </a>
+<ol>
+{% for category in categories %}
+<li><a href="{{ url_for('panel.category', id=category.id) }}">{{ category.name }}</a></li>
+{% endfor %}
+</ol>
+{{ pager()|safe }}
+
+{% endblock  %}
