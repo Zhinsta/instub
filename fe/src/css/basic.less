@@ -2,6 +2,9 @@
  * Just basic element style and config.
  * Following amcss. http://amcss.github.io/
  */
+@import "lib/est.less";
+
+.global-normalize-opentype();
 
 @c-bg: #2F3C45;                     // color for background
 @c-bg-dark: darken(@c-bg, 5%);      // color for background quote
@@ -9,18 +12,17 @@
 @c-primary: #FAD05C;                // color for IMPORTANT information
 @c-warning: tomato;                 // color for ERROR or WARNING
 @c-success: #3C763D;                // color for operation SUCCESS
-@c-outline: @c-primary;             // color for outline
 
-@s-fs: 16px;                        // basic font-size
+@s-fs: 14px;                        // basic font-size
 @s-fs-small: 12px;                  // small font-size
-@s-fs-large: @s-fs * 2;             // large font-size
-@s-fs-largest: @s-fs * 3;           // largest font-size
+@s-fs-large: 18px;                  // large font-size
+@s-fs-largest: 24px;                // largest font-size
 @s-lh: 1.5;                         // basic line-height
 @s-lh-small: @s-lh * @s-fs * 0.8;   // basic line-height
 @s-vmargin: @s-fs * @s-lh;          // basic vertical margin between two block
 @s-hmargin: 0.5em;                  // basic horizontal margin between two block
-@s-vpadding: @s-vmargin / 2;        // basic vertical padding between two block
-@s-hpadding: 0.5em;                 // basic horizontal padding between two block
+@s-vpadding: 0.75em;                // basic vertical padding between two block
+@s-hpadding: 1em;                   // basic horizontal padding between two block
 @s-border: 1px;                     // basic border width
 @s-border-bold: 5px;                // bold border width
 
@@ -53,10 +55,10 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 h1 {
-    font-size: @s-fs-largest;
+    font-size: @s-fs * 3;
 }
 h2 {
-    font-size: @s-fs-large;
+    font-size: @s-fs * 2;
 }
 h3, h4, h5, h6 {
     font-size: @s-fs;
@@ -74,11 +76,10 @@ a {
     color: @c-primary;
     text-decoration: none;
 
+    &:hover,
     &:focus {
-        outline-color: @c-primary;
-        outline-style: dashed;
-        outline-width: 3px;
-        outline-offset: 2px;
+        outline: none;
+        border-bottom: 1px solid @c-primary;
     }
 }
 
@@ -129,22 +130,20 @@ blockquote {
 button,
 [p-button] {
     display: inline-block;
-    padding: 0 @s-hpadding;
+    padding: @s-vpadding @s-hpadding;
     line-height: @s-lh;
     vertical-align: middle;
+    cursor: pointer;
     color: @c-fc;
     font-size: @s-fs;
     text-decoration: none;
     border: 1px solid @c-fc;
     border-radius: @r-base;
-    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
     background: none;
+    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
 
     // reset a[p-typo] style
     a& {
-        &:focus {
-            outline: none;
-        }
         color: @c-fc;
     }
 
@@ -192,11 +191,13 @@ input[type="text"] {
     border: none;
     border-bottom: @s-border solid @c-fc;
     background-color: transparent;
+    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
 
     &:focus {
         outline: none;
-        border-color: @c-primary;
-        box-shadow: 1px 1px 1px inset #ccc;
+        color: @c-bg;
+        border-color: @c-fc;
+        background-color: @c-fc;
     }
 }
 textarea {
@@ -209,7 +210,9 @@ textarea {
 
     &:focus {
         outline: none;
-        border-color: @c-primary;
+        color: @c-bg;
+        border-color: @c-fc;
+        background-color: @c-fc;
     }
 }
 
@@ -219,14 +222,14 @@ textarea {
 // -----------------------------------
 [p-breadcrumb] {
     margin: @s-vmargin 0;
-    overflow: hidden;
     list-style: none;
+    .clearfix();
 
     li {
         position: relative;
         float: left;
         margin: 0;
-        padding: 0 @s-hpadding;
+        padding: 0 @s-hpadding 0 0;
         background: transparent;
 
         &::before {
@@ -241,7 +244,6 @@ textarea {
 
             &:hover,
             &:focus {
-                outline: none;
                 color: @c-primary;
             }
         }
@@ -264,7 +266,25 @@ textarea {
 // navigator
 // -----------------------------------
 [p-nav] {
+    .clearfix();
+    font-size: @s-fs-large;
+}
+[p-nav-title] {
+    float: left;
+    font-size: inherit;
+    font-weight: normal;
+}
+[p-nav] ul {
+    float: left;
 
+    li {
+        float: left;
+        font-size: inherit;
+
+        a {
+            font-size: inherit;
+        }
+    }
 }
 
 
