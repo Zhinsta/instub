@@ -6,12 +6,16 @@
 
 .global-normalize-opentype();
 
-@c-bg: #2F3C45;                     // color for background
-@c-bg-dark: darken(@c-bg, 5%);      // color for background quote
-@c-fc: #F4F1DE;                     // color for basic font-color
+@c-default: #F4F1DE;                // default color
+@c-highlight: #2F3C45;              // highligh color, when user interacted
 @c-primary: #FAD05C;                // color for IMPORTANT information
 @c-warning: tomato;                 // color for ERROR or WARNING
 @c-success: #3C763D;                // color for operation SUCCESS
+
+@c-fc: @c-default;                  // color for basic font-color
+@c-bg: @c-highlight;                // color for background
+@c-bg-dark: darken(@c-bg, 5%);      // color for background quote
+
 
 @s-fs: 14px;                        // basic font-size
 @s-fs-small: 12px;                  // small font-size
@@ -21,7 +25,7 @@
 @s-lh-small: @s-lh * @s-fs * 0.8;   // basic line-height
 @s-vmargin: @s-fs * @s-lh;          // basic vertical margin between two block
 @s-hmargin: 0.5em;                  // basic horizontal margin between two block
-@s-vpadding: 0.75em;                // basic vertical padding between two block
+@s-vpadding: 0.5em;                 // basic vertical padding between two block
 @s-hpadding: 1em;                   // basic horizontal padding between two block
 @s-border: 1px;                     // basic border width
 @s-border-bold: 5px;                // bold border width
@@ -41,6 +45,21 @@ body {
     color: @c-fc;
     font: @s-fs/@s-lh "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: @c-bg;
+}
+
+// -----------------------------------
+// utils
+// -----------------------------------
+.p-box() {
+    color: @c-default;
+    border-color: @c-default;
+    background-color: transparent;
+    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
+}
+.p-box-active() {
+    color: @c-highlight;
+    border-color: @c-default;
+    background-color: @c-default;
 }
 
 
@@ -134,32 +153,23 @@ button,
     line-height: @s-lh;
     vertical-align: middle;
     cursor: pointer;
-    color: @c-fc;
     font-size: @s-fs;
     text-decoration: none;
-    border: 1px solid @c-fc;
+    border-width: 1px;
+    border-style: solid;
     border-radius: @r-base;
-    background: none;
-    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
-
-    // reset a[p-typo] style
-    a& {
-        color: @c-fc;
-    }
+    .p-box();
 
     &:focus {
         outline: none;
         border-color: @c-primary;
     }
     &:hover {
-        color: @c-bg;
-        background-color: @c-fc;
-        border-color: @c-fc;
+        .p-box-active();
     }
     &:active {
         position: relative;
         top: @s-border;
-        border-color: @c-fc;
     }
 
     // margin between buttons
@@ -187,32 +197,27 @@ input[type="text"] {
     padding: @s-vpadding @s-hpadding;
     line-height: @s-lh;
     font-size: @s-fs;
-    color: @c-fc;
     border: none;
-    border-bottom: @s-border solid @c-fc;
-    background-color: transparent;
-    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
+    .p-box();
+    border-bottom-width: @s-border;
+    border-bottom-style: solid;
 
     &:focus {
         outline: none;
-        color: @c-bg;
-        border-color: @c-fc;
-        background-color: @c-fc;
+        .p-box-active();
     }
 }
 textarea {
     padding: @s-vpadding @s-hpadding;
     line-height: @s-lh;
     font-size: @s-fs;
-    color: @c-fc;
-    border: @s-border solid @c-fc;
-    background-color: transparent;
+    .p-box();
+    border-width: @s-border;
+    border-style: solid;
 
     &:focus {
         outline: none;
-        color: @c-bg;
-        border-color: @c-fc;
-        background-color: @c-fc;
+        .p-box-active();
     }
 }
 
@@ -264,26 +269,33 @@ textarea {
 
 // -----------------------------------
 // navigator
+// 
+// [p-nav~="h"] ==> horizontal nav
+// [p-nav~="v"] ==> vertical nav
 // -----------------------------------
-[p-nav] {
+[p-nav~="h"] {
     .clearfix();
     font-size: @s-fs-large;
-}
-[p-nav-title] {
-    float: left;
-    font-size: inherit;
-    font-weight: normal;
-}
-[p-nav] ul {
-    float: left;
 
-    li {
+    [p-nav-title] {
         float: left;
         font-size: inherit;
+        font-weight: normal;
+    }
+    [p-nav] ul {
+        float: left;
 
-        a {
+        li {
+            float: left;
             font-size: inherit;
+
+            a {
+                font-size: inherit;
+            }
         }
+    }
+    [p-nav-item] {
+        float: left;
     }
 }
 
