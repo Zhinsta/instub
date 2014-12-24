@@ -61,6 +61,11 @@ body {
     border-color: @c-default;
     background-color: @c-default;
 }
+.placeholder(@color: @input-color-placeholder) {
+    &::-moz-placeholder           { color: @color; } // Firefox
+    &:-ms-input-placeholder       { color: @color; } // Internet Explorer 10+
+    &::-webkit-input-placeholder  { color: @color; } // Safari and Chrome
+}
 
 
 // -----------------------------------
@@ -201,6 +206,7 @@ input[type="text"] {
     .p-box();
     border-bottom-width: @s-border;
     border-bottom-style: solid;
+    .placeholder(red);
 
     &:focus {
         outline: none;
