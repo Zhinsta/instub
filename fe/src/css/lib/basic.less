@@ -2,7 +2,7 @@
  * Just basic element style and config.
  * Following amcss. http://amcss.github.io/
  */
-@import "lib/est.less";
+@import "est.less";
 
 .global-normalize-opentype();
 
@@ -38,6 +38,8 @@
 @t-fast: 0.3s;          // fast transition speed for color change
 @t-base: 0.5s;          // normal transition speed for short position change
 @t-slow: 1s;            // slow transition speed for lang position change or special animation
+
+@z-tip: 100;            // z-index of tip element
 
 
 body {
@@ -82,13 +84,74 @@ body {
     &::before {
         content: '';
         position: static;
+        margin-right: 0;
     }
 }
 // reset the default link style
 .unlink() {
     color: inherit;
-    font-size: inherit;
+
+    &:hover,
+    &:focus {
+        border-bottom: none;
+    }
 }
+// replace for text-decoration: underline;
+.text-underline(@color: @c-primary) {
+    text-decoration: none;
+    border-bottom: 1px solid @color;
+}
+// horizontal menu style for ul
+.hmenu() {
+    float: left;
+    margin: 0 0 0 @s-hmargin;
+    font-size: @s-fs;
+
+    li {
+        float: left;
+        margin-left: .5em;
+        font-size: inherit;
+        .unlist();
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-primary;
+            }
+        }
+    }
+}
+// vertical menu style for ul
+.vmenu() {
+    margin: 0;
+    font-size: @s-fs;
+
+    li {
+        font-size: inherit;
+        .unlist();
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-primary;
+            }
+        }
+    }
+}
+
+
 
 
 // -----------------------------------
@@ -126,7 +189,7 @@ a {
     &:hover,
     &:focus {
         outline: none;
-        border-bottom: 1px solid @c-primary;
+        .text-underline();
     }
 }
 
@@ -218,6 +281,20 @@ button,
 }
 
 
+[p-button~="search"] {
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-radius: 0;
+
+    &:focus {
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+}
+
+
 // -----------------------------------
 // input
 // -----------------------------------
@@ -273,7 +350,7 @@ textarea {
 
         a {
             margin-left: @s-hpadding;
-            .unlink();
+            color: inherit;
 
             &:hover,
             &:focus {
@@ -297,39 +374,175 @@ textarea {
 
 // -----------------------------------
 // navigator
-// 
+//
 // [p-nav~="h"] ==> horizontal nav
 // [p-nav~="v"] ==> vertical nav
 // -----------------------------------
 [p-nav~="h"] {
     .clearfix();
-    font-size: @s-fs-large;
+    font-size: @s-fs;
 
     [p-nav-title] {
+        text-transform: uppercase;
+    }
+    [p-nav-item],
+    [p-nav-title] {
         float: left;
+        margin: 0 0 0 @s-hmargin;
         font-size: inherit;
         font-weight: normal;
-    }
-    ul {
-        float: left;
 
-        li {
-            float: left;
-            font-size: inherit;
-            .unlist();
+        &:first-child {
+            margin-left: 0;
+        }
 
-            a {
-                .unlink();
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-primary;
+            }
+        }
+        // reset button
+        a[p-button] {
+            &:focus {
+                color: inherit;
+            }
+            &:hover {
+                color: @c-highlight;
             }
         }
     }
-    [p-nav-item] {
-        float: left;
+    [p-nav-item~="right"] {
+        float: right;
+        margin-left: 0;
+        margin-right: @s-hmargin;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    [p-nav-item~="center"] {
+        position: absolute;
+        left: 50%;
+        float: none;
+        margin: 0;
+        transform: translateX(-50%);
+    }
+
+    [p-nav-item~="current"] {
+        color: @c-primary;
+        a,
+        a& {
+            .text-underline();
+        }
+    }
+
+    ul {
+        .hmenu();
+    }
+}
+[p-nav~="v"] {
+    .clearfix();
+    font-size: @s-fs;
+
+    [p-nav-title] {
+        text-transform: uppercase;
+    }
+    [p-nav-item],
+    [p-nav-title] {
+        margin: 0;
         font-size: inherit;
+        font-weight: normal;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-primary;
+            }
+        }
+        // reset button
+        a[p-button] {
+            &:hover,
+            &:focus {
+                color: @c-highlight;
+            }
+        }
+    }
+
+    [p-nav-item~="current"] {
+        color: @c-primary;
+        a,
+        a& {
+            .text-underline();
+        }
+    }
+
+    ul {
+        .vmenu();
     }
 }
 
+[p-nav~="large"] {
+    font-size: @s-fs-large;
+}
+[p-nav~="largest"] {
+    font-size: @s-fs-largest;
+}
 
+
+// -----------------------------------
+// Vertical menu style for ul element
+// <ul p-menu="v">
+// <ul p-menu="h">
+// -----------------------------------
+[p-menu~="v"] {
+    .vmenu();
+}
+[p-menu~="h"] {
+    .hmenu();
+}
+
+[p-menu~="large"] {
+    font-size: @s-fs-large;
+}
+[p-menu~="largest"] {
+    font-size: @s-fs-largest;
+}
+
+
+// -----------------------------------
+// Vertical menu style for ul element
+// <div p-tip="bottom">...</div>
+// <div p-tip="top">...</div>
+// <div p-tip="left">...</div>
+// <div p-tip="right">...</div>
+// -----------------------------------
+[p-tip] {
+    position: absolute;
+    z-index: @z-tip;
+    padding: @s-vpadding @s-hpadding;
+    color: @c-highlight;
+    background-color: @c-default;
+    border-radius: @r-base;
+}
+[p-tip~="bottom"] {
+    &::before {
+        content: "";
+        position: absolute;
+        left: 1em;
+        top: -1em;
+        border: .5em dashed transparent;
+        border-bottom: .5em solid @c-default;
+    }
+}
 
 
 // -----------------------------------

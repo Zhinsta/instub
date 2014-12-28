@@ -1,0 +1,44 @@
+.items {
+    display: block;
+}
+
+.item {
+    position: relative;
+    margin: 1em 0;
+    height: 200px;
+    line-height: 200px;
+    overflow: hidden;
+    text-align: center;
+
+    h2 {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        font-size: 4em;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .5) 25%, rgba(0, 0, 0, .7) 50%, rgba(0, 0, 0, .5) 75%, rgba(0, 0, 0, 0) 100%);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .5);
+        }
+    }
+    a {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        .unlink();
+
+        text-shadow: 1px 1px 1px #000;
+    }
+
+    img {
+        vertical-align: middle;
+        width: 200px;
+        height: 200px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+    }
+}
