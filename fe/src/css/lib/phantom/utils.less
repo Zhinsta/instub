@@ -20,6 +20,11 @@
 
     a {
         color: @c-pop-lfc;
+
+        &:hover,
+        &:focus {
+            color: @c-pop-lfc;
+        }
     }
 }
 .placeholder(@color: @input-color-placeholder) {
@@ -58,6 +63,11 @@
     text-decoration: none;
     border-bottom: 1px solid currentColor;
 }
+// replace for text-decoration: none;
+.text-nounderline() {
+    text-decoration: none;
+    border-bottom: none;
+}
 // horizontal menu style for ul
 .hmenu() {
     float: left;
@@ -73,14 +83,14 @@
         &:first-child {
             margin-left: 0;
         }
+    }
 
-        a {
-            color: inherit;
+    a {
+        color: inherit;
 
-            &:hover,
-            &:focus {
-                color: @c-lfc;
-            }
+        &:hover,
+        &:focus {
+            color: @c-lfc;
         }
     }
 }
@@ -96,14 +106,14 @@
         &:first-child {
             margin-left: 0;
         }
+    }
 
-        a {
-            color: inherit;
+    a {
+        color: inherit;
 
-            &:hover,
-            &:focus {
-                color: @c-lfc;
-            }
+        &:hover,
+        &:focus {
+            color: @c-lfc;
         }
     }
 }
