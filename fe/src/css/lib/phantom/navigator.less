@@ -1,0 +1,125 @@
+/**
+ * navigator
+ *
+ * [p-nav~="h"] ==> horizontal nav
+ * [p-nav~="v"] ==> vertical nav
+ */
+[p-nav~="h"] {
+    .clearfix();
+    font-size: @s-fs;
+
+    [p-nav-title] {
+        text-transform: uppercase;
+    }
+    [p-nav-item],
+    [p-nav-title] {
+        float: left;
+        margin: 0 0 0 @s-hmargin;
+        font-size: inherit;
+        font-weight: normal;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-lfc;
+            }
+        }
+        // reset button
+        a[p-button] {
+            &:focus {
+                color: inherit;
+            }
+            &:hover {
+                color: @c-highlight;
+            }
+        }
+    }
+    [p-nav-item~="right"] {
+        float: right;
+        margin-left: 0;
+        margin-right: @s-hmargin;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    [p-nav-item~="center"] {
+        position: absolute;
+        left: 50%;
+        float: none;
+        margin: 0;
+        transform: translateX(-50%);
+    }
+
+    [p-nav-item~="current"] {
+        color: @c-lfc;
+        a,
+        a& {
+            .text-underline();
+        }
+    }
+
+    ul {
+        .hmenu();
+    }
+}
+[p-nav~="v"] {
+    .clearfix();
+    font-size: @s-fs;
+
+    [p-nav-title] {
+        text-transform: uppercase;
+    }
+    [p-nav-item],
+    [p-nav-title] {
+        margin: 0;
+        font-size: inherit;
+        font-weight: normal;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-lfc;
+            }
+        }
+        // reset button
+        a[p-button] {
+            &:hover,
+            &:focus {
+                color: @c-highlight;
+            }
+        }
+    }
+
+    [p-nav-item~="current"] {
+        color: @c-lfc;
+        a,
+        a& {
+            .text-underline();
+        }
+    }
+
+    ul {
+        .vmenu();
+    }
+}
+
+[p-nav~="large"] {
+    font-size: @s-fs-large;
+}
+[p-nav~="largest"] {
+    font-size: @s-fs-largest;
+}
+

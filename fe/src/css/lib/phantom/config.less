@@ -1,0 +1,45 @@
+/**
+ * phantom config
+ */
+
+@c-default: #F4F1DE;                            // default color
+@c-default-light: fadeout(@c-default, 50%);     // lighten default color
+@c-highlight: #2F3C45;                          // highligh color, when user interacted
+@c-highlight-light: fadeout(@c-highlight, 50%); // lighten highlight color
+@c-highlight-dark: darken(@c-highlight, 5%);    // darken highlight color
+@c-primary: #FAD05C;                            // color for IMPORTANT information
+@c-warning: tomato;                             // color for ERROR or WARNING
+@c-success: #3C763D;                            // color for operation SUCCESS
+
+@c-fc: @c-default;                  // color for basic font-color
+@c-lfc: @c-primary;                 // color for link font-color
+@c-bg: @c-highlight;                // color for background
+@c-bg-dark: @c-highlight-dark;      // color for background quote
+
+@c-pop-fs: @c-highlight;            // color for popup element's font-color
+@c-pop-lfc: @c-primary;                 // color for link font-color
+@c-pop-bg: @c-default;              // color for popup element's background-color
+
+@s-fs: 14px;                        // basic font-size
+@s-fs-small: 12px;                  // small font-size
+@s-fs-large: 18px;                  // large font-size
+@s-fs-largest: 24px;                // largest font-size
+@s-lh: 1.5;                         // basic line-height
+@s-lh-small: @s-lh * 0.8;           // basic line-height
+@s-vmargin: @s-fs * @s-lh;          // basic vertical margin between two block
+@s-hmargin: 0.5em;                  // basic horizontal margin between two block
+@s-vpadding: 0.5em;                 // basic vertical padding between two block
+@s-hpadding: 1em;                   // basic horizontal padding between two block
+@s-border: 1px;                     // basic border width
+@s-border-bold: 5px;                // bold border width
+
+@r-small: 3px;          // small radius value
+@r-base: 4px;           // base radius value
+@r-large: 6px;          // large radius value
+@r-round: 100%;         // round radius value
+
+@t-fast: 0.3s;          // fast transition speed for color change
+@t-base: 0.5s;          // normal transition speed for short position change
+@t-slow: 1s;            // slow transition speed for lang position change or special animation
+
+@z-tip: 100;            // z-index of tip element

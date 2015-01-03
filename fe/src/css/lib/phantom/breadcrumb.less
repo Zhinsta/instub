@@ -1,0 +1,43 @@
+/**
+ * breadcrumb
+ */
+[p-breadcrumb] {
+    margin: @s-vmargin 0;
+    list-style: none;
+    .clearfix();
+
+    li {
+        position: relative;
+        float: left;
+        margin: 0;
+        padding: 0 @s-hpadding 0 0;
+        background: transparent;
+
+        &::before {
+            content: "/\00a0";
+            position: static;
+            margin: 0;
+        }
+
+        a {
+            margin-left: @s-hpadding;
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-lfc;
+            }
+        }
+
+        &:first-child {
+            padding-left: 0;
+            a {
+                margin-left: 0;
+            }
+            &::before {
+                content: "";
+            }
+        }
+    }
+}
+

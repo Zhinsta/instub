@@ -12,6 +12,7 @@
 
     h2 {
         position: absolute;
+        z-index: 1;
         margin: 0;
         width: 100%;
         height: 200px;
@@ -35,10 +36,18 @@
     }
 
     img {
-        vertical-align: middle;
+        float: left;
         width: 200px;
         height: 200px;
         border: 1px solid rgba(0, 0, 0, 0.05);
         box-sizing: border-box;
     }
+}
+
+.item-imgs {
+    position: absolute;
+    left: 50%;
+    margin-left: -500px;
+    height: 100%;
+    width: 1000px;
 }

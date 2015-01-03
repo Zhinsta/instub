@@ -1,0 +1,109 @@
+/**
+ * utils
+ */
+.p-box() {
+    color: @c-default;
+    border-color: @c-default;
+    background-color: transparent;
+    transition: background-color @t-fast, color @t-fast, border-color @t-fast;
+    .placeholder(@c-default-light);
+}
+.p-box-active() {
+    color: @c-highlight;
+    border-color: @c-default;
+    background-color: @c-default;
+    .placeholder(@c-highlight-light);
+}
+.p-box-pop() {
+    color: @c-pop-fs;
+    background-color: @c-pop-bg;
+
+    a {
+        color: @c-pop-lfc;
+    }
+}
+.placeholder(@color: @input-color-placeholder) {
+    // Firefox
+    &::-moz-placeholder {
+        color: @color;
+    }
+    // Internet Explorer 10+
+    &:-ms-input-placeholder {
+        color: @color;
+    }
+    // Safari and Chrome
+    &::-webkit-input-placeholder {
+        color: @color;
+    }
+}
+// reset the list style
+.unlist() {
+    &::before {
+        content: '';
+        position: static;
+        margin-right: 0;
+    }
+}
+// reset the default link style
+.unlink() {
+    color: inherit;
+
+    &:hover,
+    &:focus {
+        border-bottom: none;
+    }
+}
+// replace for text-decoration: underline;
+.text-underline() {
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+}
+// horizontal menu style for ul
+.hmenu() {
+    float: left;
+    margin: 0 0 0 @s-hmargin;
+    font-size: inherit;
+
+    li {
+        float: left;
+        margin-left: .5em;
+        font-size: inherit;
+        .unlist();
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-lfc;
+            }
+        }
+    }
+}
+// vertical menu style for ul
+.vmenu() {
+    margin: 0;
+    font-size: inherit;
+
+    li {
+        font-size: inherit;
+        .unlist();
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        a {
+            color: inherit;
+
+            &:hover,
+            &:focus {
+                color: @c-lfc;
+            }
+        }
+    }
+}

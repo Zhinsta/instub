@@ -1,0 +1,87 @@
+/**
+ * typography
+ */
+body {
+    margin: 0;
+    color: @c-fc;
+    font: @s-fs/@s-lh "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: @c-bg;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: @s-lh;
+
+    & + & {
+        margin-top: -@s-vmargin;
+    }
+}
+h1 {
+    font-size: @s-fs * 3;
+}
+h2 {
+    font-size: @s-fs * 2;
+}
+h3, h4, h5, h6 {
+    font-size: @s-fs;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: @s-vmargin 0;
+}
+
+small {
+    font-size: @s-fs-small;
+}
+
+a {
+    color: @c-lfc;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        outline: none;
+        .text-underline();
+    }
+}
+
+ol, ul {
+    margin: @s-vmargin 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        position: relative;
+        display: block;
+        line-height: @s-lh;
+        font-size: @s-fs;
+
+        &::before {
+            position: absolute;
+            right: 100%;
+            margin-right: .5em;
+        }
+    }
+}
+ul li {
+    &::before {
+        content: "-";
+    }
+}
+ol {
+    counter-reset: phantom-ol;
+
+    li::before {
+        counter-increment: phantom-ol;
+        content: counter(phantom-ol) ".";
+    }
+}
+
+blockquote {
+    display: block;
+    margin: @s-vmargin 0 @s-vmargin -@s-border-bold;
+    padding: @s-vpadding @s-hpadding;
+    border-left: @s-border-bold solid @c-primary;
+    background-color: @c-bg-dark;
+}
+
+

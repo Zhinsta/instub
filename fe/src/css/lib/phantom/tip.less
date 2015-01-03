@@ -1,0 +1,26 @@
+/**
+ * Vertical menu style for ul element
+ *
+ * <div p-tip="bottom">...</div>
+ * <div p-tip="top">...</div>
+ * <div p-tip="left">...</div>
+ * <div p-tip="right">...</div>
+ */
+[p-tip] {
+    position: absolute;
+    z-index: @z-tip;
+    padding: @s-vpadding @s-hpadding;
+    border-radius: @r-base;
+    .p-box-pop();
+}
+[p-tip~="bottom"] {
+    &::before {
+        content: "";
+        position: absolute;
+        left: 1em;
+        top: -1em;
+        border: .5em dashed transparent;
+        border-bottom: .5em solid @c-default;
+    }
+}
+

@@ -1,0 +1,31 @@
+/**
+ * inputs
+ */
+input[type="search"],
+input[type="text"] {
+    padding: @s-vpadding @s-hpadding;
+    line-height: @s-lh;
+    font-size: @s-fs;
+    .p-box();
+    border: none;
+    background-color: @c-highlight-dark;
+
+    &:focus {
+        outline: none;
+        .p-box-active();
+    }
+}
+textarea {
+    padding: @s-vpadding @s-hpadding;
+    line-height: @s-lh;
+    font-size: @s-fs;
+    .p-box();
+    border: none;
+    background-color: @c-highlight-dark;
+
+    &:focus {
+        outline: none;
+        .p-box-active();
+    }
+}
+

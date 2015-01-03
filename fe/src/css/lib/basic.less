@@ -6,16 +6,23 @@
 
 .global-normalize-opentype();
 
-@c-default: #F4F1DE;                // default color
-@c-highlight: #2F3C45;              // highligh color, when user interacted
-@c-primary: #FAD05C;                // color for IMPORTANT information
-@c-warning: tomato;                 // color for ERROR or WARNING
-@c-success: #3C763D;                // color for operation SUCCESS
+@c-default: #F4F1DE;                            // default color
+@c-default-light: lighten(@c-default, 10%);     // lighten default color
+@c-highlight: #2F3C45;                          // highligh color, when user interacted
+@c-highlight-light: lighten(@c-highlight, 50%); // lighten highlight color
+@c-highlight-dark: darken(@c-highlight, 5%);    // darken highlight color
+@c-primary: #FAD05C;                            // color for IMPORTANT information
+@c-warning: tomato;                             // color for ERROR or WARNING
+@c-success: #3C763D;                            // color for operation SUCCESS
 
 @c-fc: @c-default;                  // color for basic font-color
+@c-lfc: @c-primary;                 // color for link font-color
 @c-bg: @c-highlight;                // color for background
-@c-bg-dark: darken(@c-bg, 5%);      // color for background quote
+@c-bg-dark: @c-highlight-dark;      // color for background quote
 
+@c-pop-fs: @c-highlight;            // color for popup element's font-color
+@c-pop-lfc: @c-primary;                 // color for link font-color
+@c-pop-bg: @c-default;              // color for popup element's background-color
 
 @s-fs: 14px;                        // basic font-size
 @s-fs-small: 12px;                  // small font-size
@@ -57,13 +64,21 @@ body {
     border-color: @c-default;
     background-color: transparent;
     transition: background-color @t-fast, color @t-fast, border-color @t-fast;
-    .placeholder(lighten(@c-default, 10%));
+    .placeholder(@c-default-light);
 }
 .p-box-active() {
     color: @c-highlight;
     border-color: @c-default;
     background-color: @c-default;
-    .placeholder(lighten(@c-highlight, 50%));
+    .placeholder(@c-highlight-light);
+}
+.p-box-pop() {
+    color: @c-pop-fs;
+    background-color: @c-pop-bg;
+
+    a {
+        color: @c-pop-lfc;
+    }
 }
 .placeholder(@color: @input-color-placeholder) {
     // Firefox
@@ -97,9 +112,9 @@ body {
     }
 }
 // replace for text-decoration: underline;
-.text-underline(@color: @c-primary) {
+.text-underline() {
     text-decoration: none;
-    border-bottom: 1px solid @color;
+    border-bottom: 1px solid currentColor;
 }
 // horizontal menu style for ul
 .hmenu() {
@@ -122,7 +137,7 @@ body {
 
             &:hover,
             &:focus {
-                color: @c-primary;
+                color: @c-lfc;
             }
         }
     }
@@ -145,7 +160,7 @@ body {
 
             &:hover,
             &:focus {
-                color: @c-primary;
+                color: @c-lfc;
             }
         }
     }
@@ -183,7 +198,7 @@ small {
 }
 
 a {
-    color: @c-primary;
+    color: @c-lfc;
     text-decoration: none;
 
     &:hover,
@@ -298,14 +313,14 @@ button,
 // -----------------------------------
 // input
 // -----------------------------------
+input[type="search"],
 input[type="text"] {
     padding: @s-vpadding @s-hpadding;
     line-height: @s-lh;
     font-size: @s-fs;
-    border: none;
     .p-box();
-    border-bottom-width: @s-border;
-    border-bottom-style: solid;
+    border: none;
+    background-color: @c-highlight-dark;
 
     &:focus {
         outline: none;
@@ -317,8 +332,8 @@ textarea {
     line-height: @s-lh;
     font-size: @s-fs;
     .p-box();
-    border-width: @s-border;
-    border-style: solid;
+    border: none;
+    background-color: @c-highlight-dark;
 
     &:focus {
         outline: none;
@@ -354,7 +369,7 @@ textarea {
 
             &:hover,
             &:focus {
-                color: @c-primary;
+                color: @c-lfc;
             }
         }
 
@@ -401,7 +416,7 @@ textarea {
 
             &:hover,
             &:focus {
-                color: @c-primary;
+                color: @c-lfc;
             }
         }
         // reset button
@@ -432,7 +447,7 @@ textarea {
     }
 
     [p-nav-item~="current"] {
-        color: @c-primary;
+        color: @c-lfc;
         a,
         a& {
             .text-underline();
@@ -465,7 +480,7 @@ textarea {
 
             &:hover,
             &:focus {
-                color: @c-primary;
+                color: @c-lfc;
             }
         }
         // reset button
@@ -478,7 +493,7 @@ textarea {
     }
 
     [p-nav-item~="current"] {
-        color: @c-primary;
+        color: @c-lfc;
         a,
         a& {
             .text-underline();
@@ -529,9 +544,8 @@ textarea {
     position: absolute;
     z-index: @z-tip;
     padding: @s-vpadding @s-hpadding;
-    color: @c-highlight;
-    background-color: @c-default;
     border-radius: @r-base;
+    .p-box-pop();
 }
 [p-tip~="bottom"] {
     &::before {

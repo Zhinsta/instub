@@ -1,0 +1,60 @@
+/**
+ * buttons
+ */
+button,
+[p-button] {
+    display: inline-block;
+    padding: @s-vpadding @s-hpadding;
+    line-height: @s-lh;
+    vertical-align: middle;
+    cursor: pointer;
+    font-size: @s-fs;
+    text-decoration: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: @r-base;
+    .p-box();
+
+    &:focus {
+        outline: none;
+        border-color: @c-primary;
+    }
+    &:hover {
+        .p-box-active();
+    }
+    &:active {
+        position: relative;
+        top: @s-border;
+    }
+
+    // margin between buttons
+    & + button,
+    & + [p-button] {
+        margin-left: @s-hmargin;
+    }
+}
+[p-button~="small"] {
+    line-height: @s-lh-small;
+    font-size: @s-fs-small;
+}
+[p-button~="large"] {
+    font-size: @s-fs-large;
+}
+[p-button~="largest"] {
+    font-size: @s-fs-largest;
+}
+
+
+[p-button~="search"] {
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-radius: 0;
+
+    &:focus {
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+}
+
