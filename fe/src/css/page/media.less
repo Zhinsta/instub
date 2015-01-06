@@ -4,10 +4,16 @@
 #page-media {
     .media {
         .clearfix();
+        height: 640px;
+    }
+
+    .info {
+        margin: 10px 0;
     }
 
     .media-l {
         float: left;
+        height: 100%;
 
         img {
             display: block;
@@ -15,7 +21,19 @@
         }
     }
     .media-r {
-        float: left;
+        float: right;
+        padding: 0 10px 0 20px;
+        width: 310px;
+        height: 100%;
+        overflow: auto;
+        background-color: @c-highlight-dark;
+
+        p {
+        }
+    }
+
+    .media-do {
+        margin: 10px 0;
     }
 }
 
