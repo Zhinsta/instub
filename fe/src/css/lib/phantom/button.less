@@ -1,6 +1,15 @@
 /**
  * buttons
  */
+.p-change-btn-color(@color) {
+    color: @color;
+
+    &:hover {
+        border-color: @color;
+        background-color: @color;
+    }
+}
+
 button,
 [p-button] {
     display: inline-block;
@@ -44,13 +53,13 @@ button,
     font-size: @s-fs-largest;
 }
 [p-button~="primary"] {
-    color: @c-primary;
+    .p-change-btn-color(@c-primary);
 }
 [p-button~="success"] {
-    color: @c-success;
+    .p-change-btn-color(@c-success);
 }
 [p-button~="warning"] {
-    color: @c-warning;
+    .p-change-btn-color(@c-warning);
 }
 
 
