@@ -25,7 +25,6 @@ class Categories(views.MethodView):
             if not category:
                 return notfound('category not exists')
             query = category.workers
-            print query
             pager = Pager(query.count())
             workers = (query.order_by(Worker.created_time.desc())
                        .offset(pager.offset)
@@ -82,3 +81,24 @@ class CategoryEdit(views.MethodView):
         if id:
             return self.category_update(id)
         return self.category_add()
+
+
+class Users(views.MethodView):
+
+    template = '/panel/users.html'
+
+    @login_required
+    def get(self, id=None):
+        if id:
+            template = '/panel/user.html'
+            user = User.query.get(id)
+            if not user:
+                pass
+            return render_template(template, user=user)
+
+        query = User.query
+        pager = Pager(query.count())
+        users = (query.order_by(User.created_time.desc())
+                 .offset(pager.offset).limit(pager.per_page)
+                 .all())
+        return render_template(self.template, users=users, pager=pager)

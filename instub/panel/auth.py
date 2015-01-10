@@ -13,8 +13,9 @@ from flask.ext.login import login_user, logout_user
 from flask.ext.login import login_required, current_user
 
 from .forms import LoginForm, AddAdminForm, EditAdminForm
-from instub.models import Admin
+from instub.models import iAdmin
 from instub.utils import notfound
+from instub.pager import Pager
 
 
 class Login(views.MethodView):
@@ -34,9 +35,9 @@ class Login(views.MethodView):
             email = form.email.data
             password = form.password.data
             password = md5('instub%s' % password).hexdigest()
-            admin = (Admin.query
-                     .filter(Admin.email == email)
-                     .filter(Admin.password == password)
+            admin = (iAdmin.query
+                     .filter(iAdmin.email == email)
+                     .filter(iAdmin.password == password)
                      .first())
             if not admin:
                 return render_template("login.html", form=form)
@@ -53,6 +54,20 @@ class Logout(views.MethodView):
         return redirect(url_for('panel.login'))
 
 
+class Admins(views.MethodView):
+
+    template = '/panel/admins.html'
+
+    @login_required
+    def get(self):
+        query = iAdmin.query
+        pager = Pager(query.count())
+        admins = (query.order_by(iAdmin.created_time.desc())
+                  .offset(pager.offset).limit(pager.per_page)
+                  .all())
+        return render_template(self.template, admins=admins, pager=pager)
+
+
 class AdminEdit(views.MethodView):
 
     template = '/panel/add_admin.html'
@@ -60,7 +75,7 @@ class AdminEdit(views.MethodView):
     @login_required
     def get(self, id=None):
         if id:
-            admin = Admin.query.get(id)
+            admin = iAdmin.query.get(id)
             if not admin:
                 return notfound('admin not exists')
             form = EditAdminForm(name=admin.name,
@@ -72,7 +87,7 @@ class AdminEdit(views.MethodView):
         return render_template(self.template, form=form)
 
     def update_admin(self, id):
-        admin = Admin.query.get(id)
+        admin = iAdmin.query.get(id)
         if not admin:
             return notfound('admin not exists')
         form = EditAdminForm()
@@ -89,7 +104,7 @@ class AdminEdit(views.MethodView):
         form = AddAdminForm()
         if form.validate_on_submit():
             password = md5('instub%s' % form.password.data).hexdigest()
-            Admin.create(name=form.name.data,
+            iAdmin.create(name=form.name.data,
                          email=form.email.data,
                          mobile=form.mobile.data,
                          password=password)

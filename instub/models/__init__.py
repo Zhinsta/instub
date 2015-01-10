@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from user import Admin, User, Category, Worker
+from user import iAdmin, User, Category, Worker, SiteSetting, Media
 
-__all__ = [Admin, User, Category, Worker]
+__all__ = [iAdmin, User, Category, Worker, SiteSetting, Media]

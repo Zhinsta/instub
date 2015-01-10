@@ -1,0 +1,12 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<ul>
+{% for user in admins %}
+<li>{{ user.name }}</li>
+{% endfor %}
+</ul>
+{{ pager()|safe }}
+
+{% endblock  %}

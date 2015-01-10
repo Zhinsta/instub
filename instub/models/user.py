@@ -8,7 +8,7 @@ from instub.utils import login_manager
 
 @login_manager.user_loader
 def get_user(id):
-    admin = Admin.query.get(int(id))
+    admin = iAdmin.query.get(id)
     return admin
 
 
@@ -18,7 +18,7 @@ class SiteSetting(SurrogatePK, Model):
 
     name = db.Column(db.String(128), nullable=False)
     title = db.Column(db.String(128), nullable=False)
-    keywords = db.Column(db.String(255), nullable=False)
+    keyword = db.Column(db.String(255), nullable=False)
     slogan = db.Column(db.String(255), nullable=False)
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
@@ -37,7 +37,7 @@ class User(SurrogatePK, Model):
                              server_default=db.func.current_timestamp())
 
 
-class Admin(UserMixin, SurrogatePK, Model):
+class iAdmin(UserMixin, SurrogatePK, Model):
 
     __tablename__ = 'admin'
     __table_args__ = (
@@ -63,6 +63,9 @@ class Category(SurrogatePK, Model):
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
 
+    def __unicode__(self):
+        return self.name
+
     @classmethod
     def __declare_last__(cls):
         cls.workers = db.relationship(
@@ -80,11 +83,11 @@ class Category(SurrogatePK, Model):
             passive_deletes='all', lazy='dynamic')
 
 
-class Worker(Model):
+class Worker(SurrogatePK, Model):
 
     __tablename__ = 'worker'
 
-    id = db.Column(db.String(128), primary_key=True, autoincrement=False)
+    uid = db.Column(db.String(128), index=True, nullable=False)
     user_name = db.Column(db.String(128), index=True, nullable=False)
     full_name = db.Column(db.String(128), nullable=True)
     profile_picture = db.Column(db.String(255), nullable=False)
@@ -95,8 +98,14 @@ class Worker(Model):
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
 
+    medias = db.relationship(
+        'Media', lazy='select', backref='worker',
+        primaryjoin='Worker.uid==Media.worker_id',
+        foreign_keys='Media.worker_id',
+        uselist=True, passive_deletes='all')
 
-class WorkerCategory(Model):
+
+class WorkerCategory(SurrogatePK, Model):
 
     __tablename__ = 'worker_category'
 
@@ -107,18 +116,15 @@ class WorkerCategory(Model):
                              server_default=db.func.current_timestamp())
 
 
-class Media(Model):
+class Media(SurrogatePK, Model):
 
     __tablename__ = 'media'
 
-    mid = db.Column(db.String(128), primary_key=True, autoincrement=False)
+    mid = db.Column(db.String(128), index=True, nullable=False)
     worker_id = db.Column(db.String(128), nullable=False, index=True)
     low_resolution = db.Column(db.String(256), nullable=False)
     thumbnail = db.Column(db.String(256), nullable=False)
     standard_resolution = db.Column(db.String(256), nullable=False)
     created_time = db.Column(db.DateTime(timezone=True),
-                             index=True, nullable=False,
-                             server_default=db.func.current_timestamp())
-    updated_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())

@@ -11,7 +11,9 @@ instub.egg-info/
 
 # editor
 *.sw[po]
+*.html~
 .idea/
+.DS_Store
 
 # tags
 tags

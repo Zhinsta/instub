@@ -1,35 +1,18 @@
 # coding: utf-8
 
-from flask import Blueprint
+from flask.ext.admin import Admin
 
-from instub.panel.home import Home
-from instub.panel.auth import Login, Logout, AdminEdit
-from instub.panel.user import Category, Categories, CategoryEdit
+from instub.models import User, Category, iAdmin, Worker, SiteSetting, Media
+from instub.panel.home import (UserPanel, AdminPanel, CategoryPanel,
+                               WorkerPanel, SitePanel, PanelIndex, MediaPanel)
+from instub.database import db
 
-blueprint = Blueprint('panel', __name__, url_prefix='/panel')
 
-blueprint.add_url_rule('/', view_func=Home.as_view(b'index'), endpoint='index')
-
-blueprint.add_url_rule('/login', view_func=Login.as_view(b'login'),
-                       endpoint='login', methods=["GET", "POST"])
-blueprint.add_url_rule('/logout', view_func=Logout.as_view(b'logout'),
-                       endpoint='logout', methods=["GET"])
-
-blueprint.add_url_rule('/admin/add', view_func=AdminEdit.as_view(b'admin_add'),
-                       endpoint='admin_add', methods=["GET", "POST"])
-blueprint.add_url_rule('/admin/<string:id>/edit',
-                       view_func=AdminEdit.as_view(b'admin_edit'),
-                       endpoint='admin_edit', methods=["GET", "POST"])
-
-blueprint.add_url_rule('/categories',
-                       view_func=Categories.as_view(b'categories'),
-                       endpoint='categories', methods=["GET"])
-blueprint.add_url_rule('/categories/<string:id>',
-                       view_func=Categories.as_view(b'category'),
-                       endpoint='category', methods=["GET"])
-blueprint.add_url_rule('/categories/add',
-                       view_func=CategoryEdit.as_view(b'category_add'),
-                       endpoint='category_add', methods=["GET", "POST"])
-blueprint.add_url_rule('/categories/<string:id>/edit',
-                       view_func=CategoryEdit.as_view(b'category_edit'),
-                       endpoint='category_edit', methods=["GET", "POST"])
+iadmin = Admin(name='Instub Admin', index_view=PanelIndex(),
+               base_template='my_master.html')
+iadmin.add_view(SitePanel(SiteSetting, db.session))
+iadmin.add_view(AdminPanel(iAdmin, db.session))
+iadmin.add_view(UserPanel(User, db.session))
+iadmin.add_view(CategoryPanel(Category, db.session))
+iadmin.add_view(WorkerPanel(Worker, db.session))
+iadmin.add_view(MediaPanel(Media, db.session))
