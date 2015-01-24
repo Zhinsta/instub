@@ -1,0 +1,18 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<form method="POST" action="">
+	{{ form.csrf_token }}
+	{{ form.name }}
+	{% if form.name.errors %}
+	<span>{{ form.name.errors[0]}}</span>
+	{% endif %}
+	{{ form.key }}
+	{% if form.key.errors %}
+	<span>{{ form.key.errors[0]}}</span>
+	{% endif %}
+	<button type="submit">submit</button>
+</form>
+
+{% endblock  %}

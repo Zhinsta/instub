@@ -6,16 +6,18 @@ install_requires = [
     'Flask-Cache',
     'MySQL-python',
     'flask',
+    'sqlalchemy',
+    'wtforms==1.0.5',
     'flask-admin',
     'flask-restful',
     'flask-sqlalchemy',
+    'flask-migrate',
     'flask-wtf',
+    'flask-login',
     'gevent',
     'itsdangerous',
     'python-instagram',
     'redis',
-    'sqlalchemy',
-    'wtforms==1.0.5',
 ]
 
 entry_points = {

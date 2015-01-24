@@ -1,0 +1,26 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<form method="POST" action="">
+	{{ form.csrf_token }}
+	{{ form.name }}
+	{% if form.name.errors %}
+	<span>{{ form.name.errors[0]}}</span>
+	{% endif %}
+	{{ form.mobile }}
+	{% if form.mobile.errors %}
+	<span>{{ form.mobile.errors[0]}}</span>
+	{% endif %}
+	{{ form.email }}
+	{% if form.email.errors %}
+	<span>{{ form.email.errors[0]}}</span>
+	{% endif %}
+	{{ form.password }}
+	{% if form.password.errors %}
+	<span>{{ form.password.errors[0]}}</span>
+	{% endif %}
+	<button type="submit">submit</button>
+</form>
+
+{% endblock  %}

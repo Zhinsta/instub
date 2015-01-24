@@ -1,0 +1,11 @@
+{% if pagers %}
+ <ul>
+{% for pager in pagers %}
+{% if pager.page %}
+<li><a href="{{ pager.url }}">{{ pager.page }}</a></li>
+{% else %}
+<li>...</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}

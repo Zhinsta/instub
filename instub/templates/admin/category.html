@@ -1,0 +1,16 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<p>welcome {{ current_user.name }}</p>
+<h1>category</h2>
+<p>name: {{ category.name }}</p>
+<p>key: {{ category.key }}</p>
+<ul>
+	{% for worker in workers %}
+    <li>{{ category.name }}</li>
+    {% endfor %}
+</ul>
+{{ pager()|safe }}
+
+{% endblock  %}

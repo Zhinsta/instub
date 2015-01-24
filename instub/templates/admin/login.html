@@ -1,0 +1,18 @@
+{% extends "panel/layout.html" %}
+
+{% block content %}
+
+<form method="POST" action="">
+	{{ form.csrf_token }}
+	{{ form.email }}
+	{% if form.email.errors %}
+	<span>{{ form.email.errors[0]}}</span>
+	{% endif %}
+	{{ form.password }}
+	{% if form.password.errors %}
+	<span>{{ form.password.errors[0]}}</span>
+	{% endif %}
+	<button type="submit">登录</button>
+</form>
+
+{% endblock  %}
