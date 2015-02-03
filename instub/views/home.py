@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from flask import views
+from flask import render_template
 
 from instub.models import User
 
@@ -8,5 +9,4 @@ from instub.models import User
 class HomeView(views.MethodView):
     def get(self):
         user = User.query.all()
-        print user
-        return 'hello instub!'
+        return render_template('home.html')

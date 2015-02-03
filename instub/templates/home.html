@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block page_title %} {{ super() }} {% endblock %}
+{% block css %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="content">
+<a href="{{ url_for("views.login") }}">登录</a>
+</div>
+{% endblock %}

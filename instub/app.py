@@ -10,10 +10,11 @@ from instub import views
 from instub.utils import login_manager
 from instub.panel import iadmin
 from instub.models import iAdmin
+from instub.errors import register_errorhandlers
 
 app = Flask(__name__)
 
-app.config.from_pyfile(os.path.join('config.py'))
+app.config.from_pyfile(os.path.join('settings.py'))
 
 db.init_app(app)
 migrate.init_app(app, db)
@@ -31,3 +32,5 @@ init_login()
 iadmin.init_app(app)
 
 app.register_blueprint(views.blueprint)
+register_errorhandlers(app)
+
