@@ -1,12 +1,21 @@
 {% extends "layout.html" %}
+{% set body_class="page-index" %}
 
-{% block page_title %} {{ super() }} {% endblock %}
+{% block title %} {{ super() }} {% endblock %}
 {% block css %}
     {{ super() }}
 {% endblock %}
 
 {% block content %}
-<div class="content">
-<a href="{{ url_for("views.login") }}">登录</a>
+<h2>Instub, enjoy beautiful Instagram photos in one place.</h2>
+<div class="items">
+    <div class="item">
+        <h2><a href="">Models</a></h2>
+        <div class="item-imgs">
+            <img src="assets/p1.jpeg" alt="">
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock %}

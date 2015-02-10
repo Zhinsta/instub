@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% set body_class="page-profile" %}
+{% block title %}
+未关注
+{{ super() }}
+{% endblock %}
+{% block main %}
+<div class="main">
+    <div class="photos">
+        <p class="photos-noauth">
+        你需要关注TA，才能看到照片。<a href="javascript:void(0);" class="jsFollow" data-ukey="{{ ukey }}" data-action="follow" title="关注TA">关注TA</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+

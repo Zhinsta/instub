@@ -59,14 +59,13 @@ class LoginView(views.MethodView):
 
     def get(self):
         if has_login():
-            return redirect(url_for('views.members'))
+            return redirect(url_for('views.welcome'))
         redirect_uri = INSTAGRAM_REDIRECT_URI
         if request.args.get('uri', ''):
             redirect_uri += '?uri=' + request.args.get('uri')
         api = InstagramAPI(client_id=INSTAGRAM_CLIENT_ID,
                            client_secret=INSTAGRAM_CLIENT_SECRET,
                            redirect_uri=redirect_uri)
-
         try:
             redirect_uri = api.get_authorize_login_url(scope=INSTAGRAM_SCOPE)
         except InstagramAPIError:
@@ -78,7 +77,7 @@ class LogoutView(views.MethodView):
 
     @login_required
     def get(self):
-        session.pop('ukey', None)
+        session.pop('uid', None)
         session.pop('username', None)
         session.pop('access_token', None)
         url = url_for('views.home')

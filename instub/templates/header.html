@@ -1,0 +1,31 @@
+<div class="header" p-nav="h largest">
+    <h1 p-nav-title><a href="/">Instub</a></h1>
+
+    <form p-nav-item="center" action="/search/">
+        <input type="search" placeholder="Find beautiful photos..."/>
+    </form>
+
+    <div p-nav-item="right">
+        {% if not request.uid %}
+        <a href="{{ url_for("views.login", uri=request.url) }}" p-button>Login</a>
+        {% else %}
+        <a href="{{ url_for('user.profile') }}">{{ request.username }}</a>
+        {% endif %}
+    </div>
+</div>
+<div class="header-menu header-nav" p-tip="bottom">
+    <ul p-menu="v large" id="listMenu">
+        <li><a href="###">Popular Users</a></li>
+        <li><a href="###">Models</a></li>
+        <li p-nav-item="current"><a href="###">Art</a></li>
+        <li><a href="###">Pets</a></li>
+        <li><a href="###">Food</a></li>
+    </ul>
+</div>
+
+<div class="header-menu header-info" p-tip="bottom">
+    <ul p-menu="v large" id="infoMenu">
+        <li><a href="###">logout</a></li>
+    </ul>
+</div>
+

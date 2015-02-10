@@ -15,5 +15,5 @@ class HomeView(views.MethodView):
 
 class Welcome(views.MethodView):
 
-	def get(self):
-		return render_template('welcome.html')
+    def get(self):
+        return render_template('welcome.html')

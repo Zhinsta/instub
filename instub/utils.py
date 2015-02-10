@@ -16,7 +16,7 @@ def has_login():
         return False
     if not session.get('username', ''):
         return False
-    user = UserModel.query.get(session['uid'])
+    user = User.query.get(session['uid'])
     if not user:
         return False
     return user
@@ -40,10 +40,10 @@ def render(template, **argkv):
     uid = ''
     if request.uid:
         uid = request.uid
-    if ukey:
+    if uid:
         argkv.update({'has_login': True,
                       'username': session.get('username', ''),
-                      'uid': ukey,
+                      'uid': uid,
                       'request': request})
     else:
         argkv.update({'has_login': False})
@@ -55,3 +55,8 @@ def apierror(message=None, status_code=500):
         message = \
             u'服务器不给力，勇敢的少年啊，请重新试一次吧'
     return (render('error.html', message=message), status_code)
+
+
+def get_errors(*rs):
+    return [e for e in rs if isinstance(e, InstagramAPIError)]
+
