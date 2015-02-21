@@ -12,7 +12,7 @@ iadmin = Admin(name='Instub Admin', index_view=PanelIndex(),
                base_template='my_master.html')
 iadmin.add_view(SitePanel(SiteSetting, db.session))
 iadmin.add_view(AdminPanel(iAdmin, db.session))
-iadmin.add_view(UserPanel(User, db.session))
+iadmin.add_view(UserPanel())
 iadmin.add_view(CategoryPanel(Category, db.session))
 iadmin.add_view(WorkerPanel(Worker, db.session))
 iadmin.add_view(MediaPanel(Media, db.session))

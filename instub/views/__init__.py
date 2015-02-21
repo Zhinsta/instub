@@ -5,6 +5,10 @@ from flask import Blueprint
 from instub.views.home import HomeView, Welcome
 from instub.views.auth import OAuthCodeView, LoginView, LogoutView
 
+from user import blueprint as user_blueprint
+
+__all__ = [user_blueprint]
+
 blueprint = Blueprint('views', __name__)
 
 blueprint.add_url_rule('/', view_func=HomeView.as_view(b'home'), endpoint='home')

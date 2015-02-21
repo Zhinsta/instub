@@ -32,5 +32,6 @@ init_login()
 iadmin.init_app(app)
 
 app.register_blueprint(views.blueprint)
+app.register_blueprint(views.user_blueprint)
 register_errorhandlers(app)
 

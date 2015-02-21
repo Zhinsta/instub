@@ -15,11 +15,11 @@ from instagram import InstagramAPI
 from instagram import InstagramAPIError
 
 from instub.errors import InternalServerError
-
+from instub.utils import has_login, login_required
 
 signer = itsdangerous.URLSafeSerializer('fbxrinima')
 
-blueprint = Blueprint('user', __name__)
+blueprint = Blueprint('user_view', __name__)
 
 
 class ProfileView(views.MethodView):
