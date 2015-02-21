@@ -42,6 +42,7 @@ class Worker(SurrogatePK, Model):
     user_name = db.Column(db.String(128), index=True, nullable=False)
     full_name = db.Column(db.String(128), nullable=True)
     profile_picture = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(64), nullable=False, index=True)
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
@@ -67,11 +68,12 @@ class WorkerCategory(SurrogatePK, Model):
                              server_default=db.func.current_timestamp())
 
 
-class Media(SurrogatePK, Model):
+class Media(Model):
 
     __tablename__ = 'media'
 
-    mid = db.Column(db.String(128), index=True, nullable=False)
+    id = db.Column(db.String(128), index=True, primary_key=True,
+                   autoincrement=False, nullable=False)
     worker_id = db.Column(db.String(128), nullable=False, index=True)
     low_resolution = db.Column(db.String(256), nullable=False)
     thumbnail = db.Column(db.String(256), nullable=False)

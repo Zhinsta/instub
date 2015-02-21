@@ -2,7 +2,14 @@
 
 DEBUG = True
 
-SQLALCHEMY_DATABASE_URI = 'mysql://root:@localhost:3306/instub?charset=utf8'
+DB_HOST = 'localhost'
+DB_PORT = 3306
+DB_USER = 'root'
+DB_DATEBASE = 'instub'
+DB_PASSWORD = ''
+
+SQLALCHEMY_DATABASE_URI = 'mysql://%s:@%s:%s/%s?charset=utf8' % (
+    DB_USER, DB_HOST, DB_PORT, DB_DATEBASE)
 SECRET_KEY = 'Instub'
 
 INSTAGRAM_CLIENT_ID = '30fc02241ccb410fbf7fe5508c650c78'

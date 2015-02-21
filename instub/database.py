@@ -4,7 +4,9 @@ Database module, including the SQLAlchemy database object and DB-related
 utilities.
 """
 import random
+from functools import wraps
 
+import MySQLdb
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import String, TypeDecorator, Text
 from flask import json
@@ -112,3 +114,146 @@ class JsonText(JsonString):
 
     def copy(self):
         return JsonText(self.impl.length)
+
+
+class Configuraion:
+    def __init__(self):
+        from instub import settings
+        self.db = settings.DB_DATEBASE
+        self.host = settings.DB_HOST
+        self.port = settings.DB_PORT
+        self.user = settings.DB_USER
+        self.passwd = settings.DB_PASSWORD
+
+
+def mysql(sql, param=None, op='query'):
+
+    _conf = Configuraion()
+
+    def on_sql_error(err):
+        import sys
+        print err
+        sys.exit(-1)
+
+    def handle_sql_result(cursor, is_fetchone):
+        if is_fetchone:
+            ver = cursor.fetchone()
+        else:
+            ver = cursor.fetchall()
+        return ver
+
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            is_fetchone = kwargs.get('fetchone', None)
+            conn = MySQLdb.connect(host=_conf.host, port=_conf.port,
+                                   user=_conf.user, passwd=_conf.passwd,
+                                   db=_conf.db, charset="utf8")
+            cursor = conn.cursor()
+            try:
+                if param and isinstance(param, list) and len(param) > 1:
+                    cursor.executemany(sql, param)
+                elif param:
+                    cursor.execute(sql, param[0])
+                else:
+                    cursor.execute(sql)
+            except MySQLdb.DatabaseError as e:
+                on_sql_error(e)
+
+            if op == 'query':
+                data = handle_sql_result(cursor, is_fetchone)
+            elif op in ['insert', 'update', 'delete']:
+                data = []
+                conn.commit()
+            result = fn(data, **kwargs)
+            cursor.close()
+            conn.close()
+            return result
+        return wrapper
+
+    return decorator
+
+
+def yield_param(param):
+    limit = 1000
+    offset = 0
+    total = len(param)
+
+    while total > offset:
+        result = param[offset: offset + limit]
+        offset += limit
+        yield result
+
+
+def execute_sql(sql, param=None, op='query'):
+
+    def _execute(sql, param=None, op=op):
+        @mysql(sql, param=param, op=op)
+        def execute(data):
+            return data
+        execute()
+
+    if isinstance(param, list):
+        for p in yield_param(param):
+            _execute(sql, param=p, op=op)
+    elif isinstance(param, tuple):
+        _execute(sql, param=param, op=op)
+    else:
+        _execute(sql, op=op)
+    return
+
+
+@mysql(sql='select access_token from user order by rand() limit 1')
+def get_token(data, fetchone=True):
+    if data:
+        token = data[0]
+        return token
+    return
+
+
+@mysql(sql='select uid from worker where status="prepare" '
+       'order by updated_time limit 1')
+def get_fresh_worker(data, fetchone=True):
+    if data:
+        uid = data[0]
+        sql = 'update worker set status="doing" where uid=%s' % uid
+        execute_sql(sql, op='update')
+        return uid
+    return
+
+
+def set_worker_prepare():
+    sql = 'update worker set status="prepare" where status="done"'
+    execute_sql(sql, op='update')
+
+
+def set_worker_done(uid):
+    from datetime import datetime
+    now = datetime.now()
+    sql = 'update worker set status="done", updated_time="%s" where uid=%s' % (now, uid)
+    execute_sql(sql, op='update')
+
+
+def get_last_media(uid, fetchone=True):
+    sql = ('select id from media where worker_id="%s" '
+           'order by created_time desc limit 1' % uid)
+
+    @mysql(sql=sql)
+    def execute(data, fetchone=True):
+        if data:
+            mid = data[0]
+            return mid
+        return
+
+    return execute(fetchone=fetchone)
+
+
+def insert_medias(medias):
+    sql = ("insert into media(id, worker_id, low_resolution, thumbnail, "
+           "standard_resolution, created_time) values(%s, %s, %s, %s, %s, %s)")
+    param = [(media.id, media.user.id,
+              media.images['low_resolution'],
+              media.images['thumbnail'],
+              media.images['standard_resolution'],
+              media.created_time) for media in medias]
+    execute_sql(sql, param, op='insert')
