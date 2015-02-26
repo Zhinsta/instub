@@ -61,7 +61,7 @@ def upgrade():
     sa.Column('thumbnail', sa.String(length=256), nullable=False),
     sa.Column('standard_resolution', sa.String(length=256), nullable=False),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
-    sa.PrimaryKeyConstraint('mid')
+    sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('media', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_media_created_time'), ['created_time'], unique=False)
