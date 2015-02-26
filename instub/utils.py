@@ -60,3 +60,7 @@ def apierror(message=None, status_code=500):
 def get_errors(*rs):
     return [e for e in rs if isinstance(e, InstagramAPIError)]
 
+
+def get_worker():
+    file_path = None
+

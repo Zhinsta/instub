@@ -5,6 +5,7 @@
 .gitconfig
 .installed.cfg
 bin/
+data/
 parts/
 eggs/
 develop-eggs/
