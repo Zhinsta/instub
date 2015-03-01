@@ -13,11 +13,11 @@
 	{{ category }}
     <div class="item">
 		<h2><a href="">{{ category.name }}</a></h2>
-		{% for image in category.medias(5) %}
         <div class="item-imgs">
+		{% for image in category.medias(5) %}
 			<img src="{{ image.thumbnail|image }}" alt="">
-        </div>
 		{% endfor %}
+        </div>
     </div>
 	{% endfor %}
 </div>

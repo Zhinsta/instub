@@ -20,6 +20,7 @@ class Category(SurrogatePK, Model):
 
     def medias(self, limit=20):
         medias = (Media.query
+                  .filter(Category.id == self.id)
                   .filter(Category.id == WorkerCategory.category_id)
                   .filter(Worker.id == WorkerCategory.worker_id)
                   .filter(Worker.uid == Media.worker_id)
