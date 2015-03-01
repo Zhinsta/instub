@@ -19,9 +19,10 @@ from instagram import InstagramAPIError
 
 from instub.database import (db, get_fresh_worker, get_last_media,
                              get_token, insert_medias, set_worker_done,
-                             set_worker_prepare)
+                             set_worker_prepare, update_worker)
 from instub.models import Category, Worker, User, Media
 from instub.errors import NotFound, InternalServerError
+from instub.utils import update_workers
 
 from .forms import LoginForm
 
@@ -76,41 +77,55 @@ class PanelIndex(AdminIndexView):
                     min_id=min_id)
                 medias_list.extend(medias)
             return medias_list
-        except InstagramAPIError:
+        except InstagramAPIError, e:
+            print e
             return InternalServerError(u'服务器暂时出问题了')
 
     def _update_worker(self):
-        task = tasks.get(timeout=1)
-        uid = get_fresh_worker(fetchone=True)
-        if not uid:
-            return
-        access_token = get_token(fetchone=True)
-        if not access_token:
-            return
-        min_id = get_last_media(uid=uid)
-        medias = self._get_medias(uid=uid, access_token=access_token,
-                                  min_id=min_id)
-        if medias:
-            insert_medias(medias[:-1])
-        set_worker_done(uid)
+        try:
+            task = tasks.get(timeout=1)
+            print task
+            uid = get_fresh_worker(fetchone=True)
+            if not uid:
+                return
+            access_token = get_token(fetchone=True)
+            if not access_token:
+                return
+            min_id = get_last_media(uid=uid)
+            medias = self._get_medias(uid=uid, access_token=access_token,
+                                      min_id=min_id)
+            if medias:
+                insert_medias(medias[:-1])
+                if isinstance(medias, list):
+                    worker = medias[0].user
+                    update_worker(uid, worker.username, worker.profile_picture,
+                                  full_name=worker.full_name)
+            set_worker_done(uid)
+            gevent.sleep(0)
+        except Empty:
+            print 'ALL DONE'
 
     def _put_tasks(self, total):
         for i in xrange(0, total):
             tasks.put(i)
         print 'total: %s DONE' % total
 
-    @expose('/update_worker')
+    @expose('/update_workers_media')
     def update_workers_media(self):
         total = Worker.query.count()
         set_worker_prepare()
         gevent.spawn(self._put_tasks, total=total)
         fs = []
-        for i in xrange(0, min(50, total)):
+        for i in xrange(0, min(5, total)):
             g = gevent.spawn(self._update_worker)
             fs.append(g)
         gevent.joinall(fs)
         return super(PanelIndex, self).index()
 
+    @expose('/update_workers')
+    def update_workers(self):
+        update_workers()
+        return super(PanelIndex, self).index()
 
 class SitePanel(PanelBase):
     pass

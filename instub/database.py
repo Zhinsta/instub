@@ -132,7 +132,9 @@ def mysql(sql, param=None, op='query'):
 
     def on_sql_error(err):
         import sys
+        print '---------------------'
         print err
+        print '---------------------'
         sys.exit(-1)
 
     def handle_sql_result(cursor, is_fetchone):
@@ -216,7 +218,7 @@ def get_token(data, fetchone=True):
 def get_fresh_worker(data, fetchone=True):
     if data:
         uid = data[0]
-        sql = 'update worker set status="doing" where uid=%s' % uid
+        sql = 'update worker set status="doing" where uid="%s"' % uid
         execute_sql(sql, op='update')
         return uid
     return
@@ -230,7 +232,14 @@ def set_worker_prepare():
 def set_worker_done(uid):
     from datetime import datetime
     now = datetime.now()
-    sql = 'update worker set status="done", updated_time="%s" where uid=%s' % (now, uid)
+    sql = 'update worker set status="done", updated_time="%s" where uid="%s"' % (now, uid)
+    execute_sql(sql, op='update')
+
+
+def update_worker(uid, user_name, profile_picture, full_name='fullname'):
+    sql = ('update worker set user_name="%s", full_name="%s",'
+           'profile_picture="%s" where uid="%s"' %
+           (user_name, full_name, profile_picture, uid))
     execute_sql(sql, op='update')
 
 

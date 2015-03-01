@@ -25,14 +25,15 @@ def upgrade():
     )
     with op.batch_alter_table('category', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_category_created_time'), ['created_time'], unique=False)
-        batch_op.create_index(batch_op.f('ix_category_key'), ['key'], unique=False)
+        batch_op.create_index(batch_op.f('ix_category_key'), ['key'], unique=True)
+        batch_op.create_index(batch_op.f('ix_category_name'), ['name'], unique=True)
 
     op.create_table('worker',
     sa.Column('id', sa.String(length=128), autoincrement=False, nullable=False),
     sa.Column('uid', sa.String(length=128), nullable=False),
-    sa.Column('user_name', sa.String(length=128), nullable=False),
+    sa.Column('user_name', sa.String(length=128), nullable=True),
     sa.Column('full_name', sa.String(length=128), nullable=True),
-    sa.Column('profile_picture', sa.String(length=255), nullable=False),
+    sa.Column('profile_picture', sa.String(length=255), nullable=True),
     sa.Column('status', sa.String(length=64), nullable=True, server_default='prepare'),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('updated_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
@@ -43,7 +44,7 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_worker_updated_time'), ['updated_time'], unique=False)
         batch_op.create_index(batch_op.f('ix_worker_user_name'), ['user_name'], unique=False)
         batch_op.create_index(batch_op.f('ix_worker_status'), ['status'], unique=False)
-        batch_op.create_index(batch_op.f('ix_worker_uid'), ['uid'], unique=False)
+        batch_op.create_index(batch_op.f('ix_worker_uid'), ['uid'], unique=True)
 
     op.create_table('worker_category',
     sa.Column('worker_id', sa.String(length=128), nullable=False),
@@ -140,6 +141,7 @@ def downgrade():
 
     op.drop_table('worker')
     with op.batch_alter_table('category', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_category_name'))
         batch_op.drop_index(batch_op.f('ix_category_key'))
         batch_op.drop_index(batch_op.f('ix_category_created_time'))
 

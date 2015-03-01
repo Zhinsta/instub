@@ -61,6 +61,48 @@ def get_errors(*rs):
     return [e for e in rs if isinstance(e, InstagramAPIError)]
 
 
-def get_worker():
-    file_path = None
+def get_workers():
+    import os, csv
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    data_path = os.path.join(current_path, 'data')
+    workers_file = []
+    for filename in os.listdir(data_path):
+        if '.csv' in filename:
+            workers_file.append(filename)
+    workers_dict = {}
+    for wfile in workers_file:
+        filepath = os.path.join(data_path, wfile)
+        category = wfile.split('.')[0]
+        cworkers = []
+        with open(filepath, 'rb') as workers:
+            reader = csv.reader(workers, delimiter=',', quotechar='|')
+            for url in reader:
+                if url and url[0]:
+                    url_split = url[0].split('/')
+                    if len(url_split) > 2:
+                        uid = url_split[-2]
+                        if uid.isdigit():
+                            cworkers.append(uid)
+        workers_dict[category] = cworkers
+    return workers_dict
 
+
+def update_workers():
+    from instub.models import Category, Worker, WorkerCategory
+    workers = get_workers()
+    for category_name in workers:
+        category = Category.query.filter(Category.name==category_name).first()
+        if not category:
+            category = Category.create(name=category_name, key=category_name)
+        uids = workers.get(category_name)
+        for uid in uids:
+            worker = Worker.query.filter(Worker.uid==uid).first()
+            if not worker:
+                worker = Worker.create(uid=uid)
+            wc = (WorkerCategory.query
+                  .filter(WorkerCategory.worker_id == worker.id)
+                  .filter(WorkerCategory.category_id == category.id)
+                  .first())
+            if not wc:
+                WorkerCategory.create(worker_id=worker.id,
+                                      category_id=category.id)

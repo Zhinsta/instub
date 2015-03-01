@@ -8,8 +8,8 @@ class Category(SurrogatePK, Model):
 
     __tablename__ = 'category'
 
-    name = db.Column(db.String(128), nullable=False)
-    key = db.Column(db.String(128), index=True, nullable=True)
+    name = db.Column(db.String(128), index=True, nullable=False, unique=True)
+    key = db.Column(db.String(128), index=True, nullable=True, unique=True)
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
@@ -38,11 +38,12 @@ class Worker(SurrogatePK, Model):
 
     __tablename__ = 'worker'
 
-    uid = db.Column(db.String(128), index=True, nullable=False)
-    user_name = db.Column(db.String(128), index=True, nullable=False)
+    uid = db.Column(db.String(128), index=True, nullable=False, unique=True)
+    user_name = db.Column(db.String(128), index=True, nullable=True)
     full_name = db.Column(db.String(128), nullable=True)
-    profile_picture = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(64), nullable=False, index=True)
+    profile_picture = db.Column(db.String(255), nullable=True)
+    status = db.Column(db.String(64), nullable=False, index=True,
+                       server_default='prepare')
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
@@ -57,7 +58,7 @@ class Worker(SurrogatePK, Model):
         uselist=True, passive_deletes='all')
 
 
-class WorkerCategory(SurrogatePK, Model):
+class WorkerCategory(Model):
 
     __tablename__ = 'worker_category'
 
