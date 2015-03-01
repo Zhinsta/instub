@@ -6,26 +6,26 @@
     </form>
 
     <div p-nav-item="right">
-        {% if not request.uid %}
+        {% with current_user = online_user() %}
+        {% if not current_user %}
         <a href="{{ url_for("views.login", uri=request.url) }}" p-button>Login</a>
         {% else %}
-        <a href="{{ url_for('user.profile') }}">{{ request.username }}</a>
+        <a href="{{ url_for('user_view.profile', uid=current_user.id) }}">{{ current_user.name }}</a>
         {% endif %}
+        {% endwith %}
     </div>
 </div>
 <div class="header-menu header-nav" p-tip="bottom">
     <ul p-menu="v large" id="listMenu">
-        <li><a href="###">Popular Users</a></li>
-        <li><a href="###">Models</a></li>
-        <li p-nav-item="current"><a href="###">Art</a></li>
-        <li><a href="###">Pets</a></li>
-        <li><a href="###">Food</a></li>
+        {% for category in all_categories() %}
+        <li p-nav-item="current"><a href="{{ category.url }}">{{ category.name }}</a></li>
+        {% endfor %}
     </ul>
 </div>
 
 <div class="header-menu header-info" p-tip="bottom">
     <ul p-menu="v large" id="infoMenu">
-        <li><a href="###">logout</a></li>
+      <li><a href="{{ url_for("views.logout") }}">logout</a></li>
     </ul>
 </div>
 

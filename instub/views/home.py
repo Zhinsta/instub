@@ -9,7 +9,6 @@ from instub.models import User, Category
 class HomeView(views.MethodView):
     def get(self):
         categories = Category.query.order_by(Category.sort_score.desc()).all()
-        print categories[0].medias()
         return render_template('home.html', categories=categories)
 
 

@@ -1,19 +1,25 @@
 # coding: utf-8
 
 from flask import views
+from flask import Blueprint
 from flask import render_template
 
-from instub.models import User
+from instub.models import Category
+from instub.pager import Pager
+
+blueprint = Blueprint('category_view', __name__)
 
 
-class HomeView(views.MethodView):
-    def get(self):
-        user = User.query.all()
-        return render_template('home.html')
+class CategoryView(views.MethodView):
+
+    def get(self, name):
+        category = Category.query.filter(Category.name == name).first()
+        pager = Pager(category.medias_count())
+        medias = category.medias(limit=pager.per_page, offset=pager.offset)
+        return render_template('medias_list.html', pager=pager,
+                               medias=medias, category=category)
 
 
-
-class Welcome(views.MethodView):
-
-    def get(self):
-        return render_template('welcome.html')
+blueprint.add_url_rule('/category/<name>/',
+                       view_func=CategoryView.as_view(b'category'),
+                       endpoint='category')

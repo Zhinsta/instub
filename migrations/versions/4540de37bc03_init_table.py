@@ -20,18 +20,20 @@ def upgrade():
     sa.Column('id', sa.String(length=128), server_default='3fd854071e8e', autoincrement=False, nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
     sa.Column('key', sa.String(length=128), nullable=True),
+    sa.Column('sort_score', sa.Integer(), nullable=True, server_default='0'),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('category', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_category_created_time'), ['created_time'], unique=False)
-        batch_op.create_index(batch_op.f('ix_category_key'), ['key'], unique=False)
+        batch_op.create_index(batch_op.f('ix_category_sort_score'), ['key'], unique=False)
+        batch_op.create_index(batch_op.f('ix_category_key'), ['key'], unique=True)
+        batch_op.create_index(batch_op.f('ix_category_name'), ['name'], unique=True)
 
     op.create_table('worker',
     sa.Column('id', sa.String(length=128), autoincrement=False, nullable=False),
     sa.Column('uid', sa.String(length=128), nullable=False),
     sa.Column('user_name', sa.String(length=128), nullable=True),
-    sa.Column('full_name', sa.String(length=128), nullable=True),
     sa.Column('profile_picture', sa.String(length=255), nullable=True),
     sa.Column('status', sa.String(length=64), nullable=True, server_default='prepare'),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
@@ -43,7 +45,7 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_worker_updated_time'), ['updated_time'], unique=False)
         batch_op.create_index(batch_op.f('ix_worker_user_name'), ['user_name'], unique=False)
         batch_op.create_index(batch_op.f('ix_worker_status'), ['status'], unique=False)
-        batch_op.create_index(batch_op.f('ix_worker_uid'), ['uid'], unique=False)
+        batch_op.create_index(batch_op.f('ix_worker_uid'), ['uid'], unique=True)
 
     op.create_table('worker_category',
     sa.Column('worker_id', sa.String(length=128), nullable=False),
@@ -61,7 +63,7 @@ def upgrade():
     sa.Column('thumbnail', sa.String(length=256), nullable=False),
     sa.Column('standard_resolution', sa.String(length=256), nullable=False),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
-    sa.PrimaryKeyConstraint('mid')
+    sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('media', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_media_created_time'), ['created_time'], unique=False)
@@ -140,7 +142,9 @@ def downgrade():
 
     op.drop_table('worker')
     with op.batch_alter_table('category', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_category_name'))
         batch_op.drop_index(batch_op.f('ix_category_key'))
+        batch_op.drop_index(batch_op.f('ix_category_sort_score'))
         batch_op.drop_index(batch_op.f('ix_category_created_time'))
 
     op.drop_table('category')

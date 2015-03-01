@@ -2,24 +2,33 @@
 
 from functools import wraps
 
-from flask import render_template, session
+from flask import render_template, session, request, redirect, url_for
 from flask.ext.login import LoginManager
+
+from instagram import InstagramAPIError
 
 login_manager = LoginManager()
 
 
 def has_login():
-    from instub.models import User
     if not session.get('uid', ''):
         return False
     if not session.get('access_token', ''):
         return False
     if not session.get('username', ''):
         return False
-    user = User.query.get(session['uid'])
-    if not user:
-        return False
-    return user
+    return True
+
+
+def online_user():
+    if has_login():
+        from instub.models import User
+        user = User.query.get(session['uid'])
+        if not user:
+            return False
+        return user
+        return has_login
+    return
 
 
 def login_required(func):
@@ -33,7 +42,6 @@ def login_required(func):
             request.access_token = session['access_token']
         return func(*args, **kwargs)
     return wrapper
-
 
 
 def render(template, **argkv):
@@ -61,8 +69,15 @@ def get_errors(*rs):
     return [e for e in rs if isinstance(e, InstagramAPIError)]
 
 
+def all_categories():
+    from instub.models import Category
+    categories = Category.query.order_by(Category.sort_score.desc()).all()
+    return categories
+
+
 def get_workers():
-    import os, csv
+    import os
+    import csv
     current_path = os.path.abspath(os.path.dirname(__file__))
     data_path = os.path.join(current_path, 'data')
     workers_file = []
@@ -91,12 +106,12 @@ def update_workers():
     from instub.models import Category, Worker, WorkerCategory
     workers = get_workers()
     for category_name in workers:
-        category = Category.query.filter(Category.name==category_name).first()
+        category = Category.query.filter(Category.name == category_name).first()
         if not category:
             category = Category.create(name=category_name, key=category_name)
         uids = workers.get(category_name)
         for uid in uids:
-            worker = Worker.query.filter(Worker.uid==uid).first()
+            worker = Worker.query.filter(Worker.uid == uid).first()
             if not worker:
                 worker = Worker.create(uid=uid)
             wc = (WorkerCategory.query

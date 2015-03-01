@@ -12,9 +12,6 @@ class Pagination(object):
         self.current_page = page
         self.per_page = per_page
         self.total_count = total_count
-        print per_page
-        print page
-        print total_count
 
     @property
     def offset(self):

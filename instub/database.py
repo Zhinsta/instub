@@ -131,11 +131,11 @@ def mysql(sql, param=None, op='query'):
     _conf = Configuraion()
 
     def on_sql_error(err):
-        import sys
+        #import sys
         print '---------------------'
         print err
         print '---------------------'
-        sys.exit(-1)
+        #sys.exit(-1)
 
     def handle_sql_result(cursor, is_fetchone):
         if is_fetchone:
@@ -241,6 +241,11 @@ def update_worker(uid, user_name, profile_picture, full_name='fullname'):
            'profile_picture="%s" where uid="%s"' %
            (user_name, full_name, profile_picture, uid))
     execute_sql(sql, op='update')
+
+
+def delete_worker(uid):
+    sql = 'delete from worker where uid="%s"' % uid
+    execute_sql(sql, op='delete')
 
 
 def get_last_media(uid, fetchone=True):

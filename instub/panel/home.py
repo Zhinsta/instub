@@ -19,7 +19,7 @@ from instagram import InstagramAPIError
 
 from instub.database import (db, get_fresh_worker, get_last_media,
                              get_token, insert_medias, set_worker_done,
-                             set_worker_prepare, update_worker)
+                             set_worker_prepare, update_worker, delete_worker)
 from instub.models import Category, Worker, User, Media
 from instub.errors import NotFound, InternalServerError
 from instub.utils import update_workers
@@ -78,7 +78,9 @@ class PanelIndex(AdminIndexView):
                 medias_list.extend(medias)
             return medias_list
         except InstagramAPIError, e:
-            print e
+            if e.error_type in ['APINotAllowedError-you',
+                                'APINotFoundError-this']:
+                delete_worker(uid)
             return InternalServerError(u'服务器暂时出问题了')
 
     def _update_worker(self):
@@ -116,7 +118,7 @@ class PanelIndex(AdminIndexView):
         set_worker_prepare()
         gevent.spawn(self._put_tasks, total=total)
         fs = []
-        for i in xrange(0, min(5, total)):
+        for i in xrange(0, min(100, total)):
             g = gevent.spawn(self._update_worker)
             fs.append(g)
         gevent.joinall(fs)

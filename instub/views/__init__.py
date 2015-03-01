@@ -6,8 +6,9 @@ from instub.views.home import HomeView, Welcome
 from instub.views.auth import OAuthCodeView, LoginView, LogoutView
 
 from user import blueprint as user_blueprint
+from category import blueprint as category_blueprint
 
-__all__ = [user_blueprint]
+__all__ = [user_blueprint, category_blueprint]
 
 blueprint = Blueprint('views', __name__)
 

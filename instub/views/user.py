@@ -25,7 +25,7 @@ blueprint = Blueprint('user_view', __name__)
 class ProfileView(views.MethodView):
 
     @login_required
-    def get(self, uid):
+    def get(self, uid=None):
         next_url = request.args.get('next_url', None)
         if next_url and 'instagram' not in next_url:
             next_url = signer.loads(next_url)

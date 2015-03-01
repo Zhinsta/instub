@@ -3,11 +3,10 @@ from __future__ import unicode_literals
 
 import os
 from flask import Flask
+from werkzeug.utils import import_string
 from .database import db, migrate
 
-from instub import views
-
-from instub.utils import login_manager
+from instub.utils import login_manager, online_user, all_categories
 from instub.panel import iadmin
 from instub.models import iAdmin
 from instub.errors import register_errorhandlers
@@ -31,6 +30,24 @@ init_login()
 
 iadmin.init_app(app)
 
-app.register_blueprint(views.blueprint)
-app.register_blueprint(views.user_blueprint)
+
+def register_blueprint(app):
+    blueprint_list = ['instub.views.blueprint',
+                      'instub.views.user_blueprint',
+                      'instub.views.category_blueprint']
+    for blueprint in blueprint_list:
+        app.register_blueprint(import_string(blueprint))
+    return app
+
+
+def register_jinja_funcs(app):
+    funcs = dict(
+        online_user=online_user,
+        all_categories=all_categories
+    )
+    app.jinja_env.globals.update(funcs)
+    return app
+
+register_blueprint(app)
+register_jinja_funcs(app)
 register_errorhandlers(app)

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.login import UserMixin
+from flask import url_for
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from instub.database import db, SurrogatePK, Model
 
 
@@ -18,14 +20,27 @@ class Category(SurrogatePK, Model):
     def __unicode__(self):
         return self.name
 
-    def medias(self, limit=20):
-        medias = (Media.query
-                  .filter(Category.id == self.id)
-                  .filter(Category.id == WorkerCategory.category_id)
-                  .filter(Worker.id == WorkerCategory.worker_id)
-                  .filter(Worker.uid == Media.worker_id)
+    @hybrid_property
+    def url(self):
+        return url_for('category_view.category', name=self.name)
+
+    def medias_query(self):
+        query = (Media.query
+                 .filter(Category.id == self.id)
+                 .filter(Category.id == WorkerCategory.category_id)
+                 .filter(Worker.id == WorkerCategory.worker_id)
+                 .filter(Worker.uid == Media.worker_id))
+        return query
+
+    def medias_count(self):
+        query = self.medias_query()
+        return query.count()
+
+    def medias(self, limit=20, offset=0):
+        query = self.medias_query()
+        medias = (query
                   .order_by(Media.created_time.desc())
-                  .limit(limit)
+                  .offset(offset).limit(limit)
                   .all())
         return medias
 
@@ -94,3 +109,8 @@ class Media(Model):
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
+
+    @hybrid_property
+    def url(self):
+        return 'test'
+        #return url_for('media_view.profile', id=self.id)

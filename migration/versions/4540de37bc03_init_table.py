@@ -34,7 +34,6 @@ def upgrade():
     sa.Column('id', sa.String(length=128), autoincrement=False, nullable=False),
     sa.Column('uid', sa.String(length=128), nullable=False),
     sa.Column('user_name', sa.String(length=128), nullable=True),
-    sa.Column('full_name', sa.String(length=128), nullable=True),
     sa.Column('profile_picture', sa.String(length=255), nullable=True),
     sa.Column('status', sa.String(length=64), nullable=True, server_default='prepare'),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
