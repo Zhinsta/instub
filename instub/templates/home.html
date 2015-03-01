@@ -9,12 +9,17 @@
 {% block content %}
 <h2>Instub, enjoy beautiful Instagram photos in one place.</h2>
 <div class="items">
+	{% for category in categories %}
+	{{ category }}
     <div class="item">
-        <h2><a href="">Models</a></h2>
+		<h2><a href="">{{ category.name }}</a></h2>
+		{% for image in category.medias(5) %}
         <div class="item-imgs">
-            <img src="assets/p1.jpeg" alt="">
+			<img src="{{ image.thumbnail|image }}" alt="">
         </div>
+		{% endfor %}
     </div>
+	{% endfor %}
 </div>
 
 </div>

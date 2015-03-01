@@ -20,11 +20,13 @@ def upgrade():
     sa.Column('id', sa.String(length=128), server_default='3fd854071e8e', autoincrement=False, nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
     sa.Column('key', sa.String(length=128), nullable=True),
+    sa.Column('sort_score', sa.Integer(), nullable=True, server_default='0'),
     sa.Column('created_time', sa.DateTime(timezone=True), server_default=sa.text(u'CURRENT_TIMESTAMP'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('category', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_category_created_time'), ['created_time'], unique=False)
+        batch_op.create_index(batch_op.f('ix_category_sort_score'), ['key'], unique=False)
         batch_op.create_index(batch_op.f('ix_category_key'), ['key'], unique=True)
         batch_op.create_index(batch_op.f('ix_category_name'), ['name'], unique=True)
 
@@ -143,6 +145,7 @@ def downgrade():
     with op.batch_alter_table('category', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_category_name'))
         batch_op.drop_index(batch_op.f('ix_category_key'))
+        batch_op.drop_index(batch_op.f('ix_category_sort_score'))
         batch_op.drop_index(batch_op.f('ix_category_created_time'))
 
     op.drop_table('category')

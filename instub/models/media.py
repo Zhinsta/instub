@@ -10,12 +10,23 @@ class Category(SurrogatePK, Model):
 
     name = db.Column(db.String(128), index=True, nullable=False, unique=True)
     key = db.Column(db.String(128), index=True, nullable=True, unique=True)
+    sort_score = db.Column(db.Integer(), index=True, nullable=True)
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
 
     def __unicode__(self):
         return self.name
+
+    def medias(self, limit=20):
+        medias = (Media.query
+                  .filter(Category.id == WorkerCategory.category_id)
+                  .filter(Worker.id == WorkerCategory.worker_id)
+                  .filter(Worker.uid == Media.worker_id)
+                  .order_by(Media.created_time.desc())
+                  .limit(limit)
+                  .all())
+        return medias
 
     @classmethod
     def __declare_last__(cls):

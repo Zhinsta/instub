@@ -23,7 +23,15 @@ def parseisoformat(value):
 @app.template_filter()
 def iproxy(url):
     url = urlparse(url)
-    return 'http://zhinsta.com:8000/' + (url.netloc + url.path).encode('base64').strip()
+    return 'http://instub.com:8000/' + (url.netloc + url.path).encode('base64').strip()
+
+
+@app.template_filter()
+def image(url):
+    params = url.split(':')
+    media_type = params[0]
+    if media_type == 'Image':
+        return url[len(media_type) + 2:]
 
 
 @app.template_filter()
