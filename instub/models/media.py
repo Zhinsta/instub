@@ -67,7 +67,6 @@ class Worker(SurrogatePK, Model):
 
     uid = db.Column(db.String(128), index=True, nullable=False, unique=True)
     user_name = db.Column(db.String(128), index=True, nullable=True)
-    full_name = db.Column(db.String(128), nullable=True)
     profile_picture = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(64), nullable=False, index=True,
                        server_default='prepare')

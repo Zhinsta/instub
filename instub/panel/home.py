@@ -100,8 +100,7 @@ class PanelIndex(AdminIndexView):
                 insert_medias(medias[:-1])
                 if isinstance(medias, list):
                     worker = medias[0].user
-                    update_worker(uid, worker.username, worker.profile_picture,
-                                  full_name=worker.full_name)
+                    update_worker(uid, worker.username, worker.profile_picture)
             set_worker_done(uid)
             gevent.sleep(0)
         except Empty:
@@ -170,20 +169,34 @@ class WorkerPanel(PanelBase):
     column_exclude_list = []
 
     # List of columns that can be sorted.
-    column_sortable_list = ('user_name', 'full_name', 'created_time',
+    column_sortable_list = ('user_name', 'created_time',
                             'updated_time')
 
     # Rename 'title' columns to 'Post Title' in list view
     column_labels = dict(user_name='Username',
-                         full_name='Fullname',
                          profile_picture='Avatar')
 
-    column_searchable_list = ('user_name', 'full_name', Category.name)
+    column_searchable_list = ('user_name',  Category.name)
 
     column_filters = ('user_name',
-                      'full_name',
                       Category.name,
                       'created_time')
+
+    def _show_pic(self, context, model, name):
+        return Markup('<img src=%s width=90 height=90>' % model.profile_picture)
+
+    def _show_user(self, context, model, name):
+        return Markup('<a href="%s">%s</a>' % (
+            url_for('user_view.profile', uid=model.uid),
+            model.user_name))
+
+    column_formatters = {
+        'user_name': _show_user,
+        'profile_picture': _show_pic,
+    }
+
+    def __init__(self, **kwargs):
+        super(WorkerPanel, self).__init__(Worker, db.session, **kwargs)
 
 
 class MediaPanel(PanelBase):
