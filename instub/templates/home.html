@@ -15,7 +15,7 @@
 		<h2><a href="{{ category.url }}">{{ category.name }}</a></h2>
         <div class="item-imgs">
 		{% for image in category.medias(5) %}
-			<img src="{{ image.thumbnail|image }}" alt="">
+			<img src="{{ image.low_resolution|image }}" alt="">
 		{% endfor %}
         </div>
     </div>

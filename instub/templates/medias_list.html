@@ -12,7 +12,7 @@
           {% for photo in medias %}
             <div class="photo">
                 <a href="{{ photo.url }}" class="photo-pic">
-                    <img src="{{ photo.standard_resolution|image }}" alt="" />
+                    <img src="{{ photo.low_resolution|image }}" alt="" />
                 </a>
                 {% with author = photo.worker %}
                 <a href="###" class="photo-author">
