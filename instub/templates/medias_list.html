@@ -8,24 +8,25 @@
 {% block body_class %}page-list{% endblock %}
 
 {% block content %}
-        <div class="photos" id="photoList">
-          {% for photo in medias %}
-            <div class="photo">
-                <a href="{{ photo.url }}" class="photo-pic">
-                    <img src="{{ photo.low_resolution|image }}" alt="" />
-                </a>
-                {% with author = photo.worker %}
-                <a href="###" class="photo-author">
-                    <img src="{{ author.profile_picture }}" alt="{{ author.user_name }}" width="32" height="32" />
-                    {{ author.user_name }}
-                </a>
-                {% endwith %}
-                <span class="photo-info">
-                  {{ photo.created_time|time_since }}
-                  <a href="javascript:void(0);" class="jsLove3" data-mid="{{ photo.id}}"></a>
-                </span>
-            </div>
-            {% endfor %}
+<h2>{{ category.name }}</h2>
+    <div class="photos" id="photoList">
+      {% for photo in medias %}
+        <div class="photo">
+            <a href="{{ photo.url }}" class="photo-pic">
+                <img src="{{ photo.low_resolution|image }}" alt="" />
+            </a>
+            {% with author = photo.worker %}
+            <a href="#" class="photo-author">
+                <img src="{{ author.profile_picture }}" alt="{{ author.username }}" width="32" height="32" />
+                {{ author.username }}
+            </a>
+            {% endwith %}
+            <span class="photo-info">
+              {{ photo.created_time|time_since }}
+              <a href="javascript:void(0);" class="jsLove3" data-mid="{{ photo.id}}"></a>
+            </span>
         </div>
-        {{ pager()|safe }}
+        {% endfor %}
+    </div>
+    {{ pager()|safe }}
 {% endblock %}

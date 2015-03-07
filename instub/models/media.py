@@ -66,7 +66,7 @@ class Worker(SurrogatePK, Model):
     __tablename__ = 'worker'
 
     uid = db.Column(db.String(128), index=True, nullable=False, unique=True)
-    user_name = db.Column(db.String(128), index=True, nullable=True)
+    username = db.Column(db.String(128), index=True, nullable=True)
     profile_picture = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(64), nullable=False, index=True,
                        server_default='prepare')
@@ -76,6 +76,9 @@ class Worker(SurrogatePK, Model):
     updated_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
                              server_default=db.func.current_timestamp())
+
+    def __unicode__(self):
+        return self.username if self.username else 'Unkonw'
 
     medias = db.relationship(
         'Media', lazy='select', backref='worker',
@@ -111,5 +114,4 @@ class Media(Model):
 
     @hybrid_property
     def url(self):
-        return 'test'
-        #return url_for('media_view.profile', id=self.id)
+        return url_for('media_view.media', id=self.id)

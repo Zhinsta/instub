@@ -1,9 +1,11 @@
 <div class="header" p-nav="h largest">
-    <h1 p-nav-title><a href="/">Instub</a></h1>
+    <h1 p-nav-title><a href="{{ url_for('views.home') }}">Instub</a></h1>
 
+    {# 
     <form p-nav-item="center" action="/search/">
         <input type="search" placeholder="Find beautiful photos..."/>
     </form>
+    #}
 
     <div p-nav-item="right">
         {% with current_user = online_user() %}

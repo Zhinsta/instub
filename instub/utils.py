@@ -2,12 +2,27 @@
 
 from functools import wraps
 
+import gevent
+from gevent.util import wrap_errors
 from flask import render_template, session, request, redirect, url_for
 from flask.ext.login import LoginManager
 
-from instagram import InstagramAPIError
+from instagram import InstagramAPIError, InstagramAPI
+
+from instub.database import get_token
 
 login_manager = LoginManager()
+
+
+def open_visit(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if has_login():
+            request.access_token = session['access_token']
+        else:
+            request.access_token = get_token(fetchone=True)
+        return func(*args, **kwargs)
+    return wrapper
 
 
 def has_login():
@@ -27,7 +42,6 @@ def online_user():
         if not user:
             return False
         return user
-        return has_login
     return
 
 
@@ -42,6 +56,19 @@ def login_required(func):
             request.access_token = session['access_token']
         return func(*args, **kwargs)
     return wrapper
+
+
+def spawn(fn, *args, **kwargs):
+    return gevent.spawn(wrap_errors(InstagramAPIError, fn), *args, **kwargs)
+
+
+def isfollow(uid, api=None):
+    if not api:
+        api = InstagramAPI(access_token=session.get('access_token', ''))
+        data = api.user_relationship(user_id=uid)
+        if data.outgoing_status == 'follows':
+            return True
+    return False
 
 
 def render(template, **argkv):
@@ -73,6 +100,14 @@ def all_categories():
     from instub.models import Category
     categories = Category.query.order_by(Category.sort_score.desc()).all()
     return categories
+
+
+def site_setting():
+    from instub.models import SiteSetting
+    setting = SiteSetting.query.first()
+    print '*************'
+    print setting
+    return setting
 
 
 def get_workers():

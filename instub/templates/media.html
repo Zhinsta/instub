@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %} {{ super() }} {% endblock %}
+{% block css %}
+    {{ super() }}
+{% endblock %}
+{% block body_class %}page-media{% endblock %}
+
+{% block content %}
+    <div class="main">
+        <div class="media">
+            <div class="media-l">
+                  <img src="{{ media.images.standard_resolution }}" alt="">
+            </div>
+            <div class="media-r">
+                <div class="info">
+                   <a class="info-pic" href="#">
+					   <img width="50" height="50" src="{{ media_user.profile_picture }}" alt="&amp;may  with mami" />
+                   </a>
+				   <h1><a href="#">{{ media_user.username }}</a></h1>
+				   <div class="info-txt"><a href="###">Following {{ media_user.counts.follows}}</a> <a href="###">Follower {{ media_user.counts.followed_by}}</a></div>
+                </div>
+                <div class="media-do">
+                    <a p-button="warning {% if is_star %}{% endif %}small ripple" href="###" class="jsLove" data-action="like" data-num="{{ media.like_count }}" data-mid="{{ media.id }}">
+                      <i class="icon-heart"></i><span>{{ media.like_count }}</span>
+                    </a>
+                    <a p-button="small ripple" href="###" class="jsFollow" data-ukey="{{ media.user.id }}" data-action="follow">Follow</a>
+                </div>
+
+                <div class="media-info">
+					<span class="media-time">{{ media.created_time|time_since }}</span>
+                    <span class="media-place"></span>:
+					{{ media.caption.text }}<br/>
+					{% for tag in (media.tags or []) %}
+					<a href="#" class="tag">#{{ tag.name }}</a>&nbsp;
+					{% endfor %}
+                    <br/>
+					{% for like in likes %}
+					<a href="#">{{ like.username }}</a>
+					{% endfor %}
+                    等人赞过
+                </div>
+				{% if media.comments %}
+				<div class="comments">
+                    <ul>
+                        <li>
+                            {% for comment in media.comments %}
+                            <a href="" title="{{ comment.user.username }}" data-mid="{{ media.id }}" data-cid="{{comment.id}}">
+                                <img src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
+                            </a>
+                            <div class="comment">
+                                <p>{{ comment.text }}</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+				{% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

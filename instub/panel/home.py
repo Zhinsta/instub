@@ -86,7 +86,6 @@ class PanelIndex(AdminIndexView):
     def _update_worker(self):
         try:
             task = tasks.get(timeout=1)
-            print task
             uid = get_fresh_worker(fetchone=True)
             if not uid:
                 return
@@ -169,16 +168,16 @@ class WorkerPanel(PanelBase):
     column_exclude_list = []
 
     # List of columns that can be sorted.
-    column_sortable_list = ('user_name', 'created_time',
+    column_sortable_list = ('username', 'created_time',
                             'updated_time')
 
     # Rename 'title' columns to 'Post Title' in list view
-    column_labels = dict(user_name='Username',
+    column_labels = dict(username='Username',
                          profile_picture='Avatar')
 
-    column_searchable_list = ('user_name',  Category.name)
+    column_searchable_list = ('username',  Category.name)
 
-    column_filters = ('user_name',
+    column_filters = ('username',
                       Category.name,
                       'created_time')
 
@@ -188,10 +187,10 @@ class WorkerPanel(PanelBase):
     def _show_user(self, context, model, name):
         return Markup('<a href="%s">%s</a>' % (
             url_for('user_view.profile', uid=model.uid),
-            model.user_name))
+            model.username))
 
     column_formatters = {
-        'user_name': _show_user,
+        'username': _show_user,
         'profile_picture': _show_pic,
     }
 
@@ -201,7 +200,28 @@ class WorkerPanel(PanelBase):
 
 class MediaPanel(PanelBase):
 
+    column_list = ('id', 'worker_id', 'low_resolution', 'thumbnail',
+                   'standard_resolution', 'created_time')
+    column_searchable_list = ('id', 'worker_id')
     column_sortable_list = ('id', 'created_time')
     column_filters = ('id',
-                      Worker.user_name,
+                      Worker.username,
                       'created_time')
+
+    def _show_low(self, context, model, name):
+        return Markup('<img src=%s width=90 height=90>' % model.low_resolution)
+
+    def _show_thumbnail(self, context, model, name):
+        return Markup('<img src=%s width=90 height=90>' % model.thumbnail)
+
+    def _show_standard(self, context, model, name):
+        return Markup('<img src=%s width=90 height=90>' % model.standard_resolution)
+
+    column_formatters = {
+        'low_resolution': _show_low,
+        'thumbnail': _show_thumbnail,
+        'standard_resolution': _show_standard,
+    }
+
+    def __init__(self, **kwargs):
+        super(MediaPanel, self).__init__(Media, db.session, **kwargs)

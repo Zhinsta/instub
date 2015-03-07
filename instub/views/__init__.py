@@ -6,9 +6,10 @@ from instub.views.home import HomeView, Welcome
 from instub.views.auth import OAuthCodeView, LoginView, LogoutView
 
 from user import blueprint as user_blueprint
+from media import blueprint as media_blueprint
 from category import blueprint as category_blueprint
 
-__all__ = [user_blueprint, category_blueprint]
+__all__ = [user_blueprint, category_blueprint, media_blueprint]
 
 blueprint = Blueprint('views', __name__)
 
@@ -17,4 +18,3 @@ blueprint.add_url_rule('/instagram/redirect/', view_func=OAuthCodeView.as_view(b
 blueprint.add_url_rule('/auth/login', view_func=LoginView.as_view(b'login'), endpoint='login')
 blueprint.add_url_rule('/auth/logout', view_func=LogoutView.as_view(b'logout'), endpoint='logout')
 blueprint.add_url_rule('/welcome', view_func=Welcome.as_view(b'welcome'), endpoint='welcome')
-

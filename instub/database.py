@@ -236,10 +236,10 @@ def set_worker_done(uid):
     execute_sql(sql, op='update')
 
 
-def update_worker(uid, user_name, profile_picture):
-    sql = ('update worker set user_name="%s", '
+def update_worker(uid, username, profile_picture):
+    sql = ('update worker set username="%s", '
            'profile_picture="%s" where uid="%s"' %
-           (user_name, profile_picture, uid))
+           (username, profile_picture, uid))
     execute_sql(sql, op='update')
 
 

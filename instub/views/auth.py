@@ -69,7 +69,7 @@ class LoginView(views.MethodView):
         try:
             redirect_uri = api.get_authorize_login_url(scope=INSTAGRAM_SCOPE)
         except InstagramAPIError:
-            return NotFound(u'服务器暂时出问题了')
+            return InternalServerError(u'Server Error')
         return redirect(redirect_uri)
 
 

@@ -62,7 +62,6 @@ class Pager(object):
         pagers = []
         for page in self.pagination.iter_pages():
             url = None
-            print self.url
             if page is not None:
                 url = '%s?page=%s' % (self.url, page)
             pagers.append({'url': url,
