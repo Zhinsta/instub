@@ -43,10 +43,10 @@
 				{% if media.comments %}
 				<div class="comments">
                     <ul>
+                        {% for comment in media.comments %}
                         <li>
-                            {% for comment in media.comments %}
                             <a href="" title="{{ comment.user.username }}" data-mid="{{ media.id }}" data-cid="{{comment.id}}">
-                                <img width="50" height="50" src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
+                                <img width="32" height="32" src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
                             </a>
                             <div class="comment">
                                 <p>{{ comment.text }}</p>
