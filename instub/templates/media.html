@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} {{ super() }} {% endblock %}
+{% block title %} {{ media_user.username }}-{{ super() }} {% endblock %}
 {% block css %}
     {{ super() }}
 {% endblock %}
@@ -15,7 +15,7 @@
             <div class="media-r">
                 <div class="info">
                    <a class="info-pic" href="#">
-					   <img width="50" height="50" src="{{ media_user.profile_picture }}" alt="&amp;may  with mami" />
+					   <img width="50" height="50" src="{{ media_user.profile_picture }}" alt="" />
                    </a>
 				   <h1><a href="#">{{ media_user.username }}</a></h1>
 				   <div class="info-txt"><a href="###">Following {{ media_user.counts.follows}}</a> <a href="###">Follower {{ media_user.counts.followed_by}}</a></div>
@@ -46,7 +46,7 @@
                         <li>
                             {% for comment in media.comments %}
                             <a href="" title="{{ comment.user.username }}" data-mid="{{ media.id }}" data-cid="{{comment.id}}">
-                                <img src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
+                                <img width="50" height="50" src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
                             </a>
                             <div class="comment">
                                 <p>{{ comment.text }}</p>

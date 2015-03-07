@@ -21,6 +21,7 @@ def open_visit(func):
             request.access_token = session['access_token']
         else:
             request.access_token = get_token(fetchone=True)
+        request.uid = None
         return func(*args, **kwargs)
     return wrapper
 
