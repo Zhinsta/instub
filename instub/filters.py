@@ -27,11 +27,8 @@ def iproxy(url):
 
 
 @app.template_filter()
-def image(url):
-    params = url.split(':')
-    media_type = params[0]
-    if media_type == 'Image':
-        return url[len(media_type) + 2:]
+def image(image):
+    return image.url
 
 
 @app.template_filter()

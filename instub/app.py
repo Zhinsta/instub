@@ -44,8 +44,8 @@ def register_blueprint(app):
 def register_jinja_funcs(app):
     funcs = dict(
         online_user=online_user,
-        all_categories=all_categories,
         site_setting=site_setting,
+        all_categories=all_categories,
     )
     app.jinja_env.globals.update(funcs)
     return app

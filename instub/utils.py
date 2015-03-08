@@ -106,8 +106,6 @@ def all_categories():
 def site_setting():
     from instub.models import SiteSetting
     setting = SiteSetting.query.first()
-    print '*************'
-    print setting
     return setting
 
 
