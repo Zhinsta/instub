@@ -17,15 +17,37 @@
     }
 
     [p-nav-title] {
+        position: relative;
         font-weight: bold;
+
+        a,
+        img {
+            display: block;
+            width: 140px;
+            height: 38px + 16 * 2;
+        }
+        a {
+            position: absolute;
+            top: -16px;
+
+            .unlink();
+        }
     }
 }
 
 .header-nav {
     top: 75px;
     left: 10px;
+    display: none;
 }
 .header-info {
     top: 75px;
     right: 10px;
+    display: none;
+}
+
+#state,
+#logo {
+    position: relative;
+    z-index: 2;
 }

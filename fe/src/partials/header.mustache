@@ -1,18 +1,20 @@
 <div class="header" p-nav="h largest">
-    <h1 p-nav-title><a href="/">Instub</a></h1>
+    <h1 p-nav-title id="logo">
+        <a href="/"><img src="/assets/logo.png" alt="logo"></a>
+    </h1>
 
     <form p-nav-item="center" action="/search/">
         <input type="search" placeholder="Find beautiful photos..."/>
     </form>
 
-    <div p-nav-item="right">
+    <div p-nav-item="right" id="state">
         <a href="#" p-button>Login</a>
         <!--
         <a href="###">zmmbreeze</a>
         -->
     </div>
 </div>
-<div class="header-menu header-nav" p-tip="bottom">
+<div class="header-menu header-nav" p-tip="bottom" id="navMenu">
     <ul p-menu="v large" id="listMenu">
         <li><a href="###">Popular Users</a></li>
         <li><a href="###">Models</a></li>
@@ -22,7 +24,7 @@
     </ul>
 </div>
 
-<div class="header-menu header-info" p-tip="bottom">
+<div class="header-menu header-info" p-tip="bottom" id="stateMenu">
     <ul p-menu="v large" id="infoMenu">
         <li><a href="###">logout</a></li>
     </ul>

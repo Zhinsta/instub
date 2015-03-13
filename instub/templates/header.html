@@ -1,5 +1,9 @@
 <div class="header" p-nav="h largest">
-    <h1 p-nav-title><a href="{{ url_for('views.home') }}">Instub</a></h1>
+    <h1 p-nav-title id="logo">
+        <a href="{{ url_for('views.home') }}">
+            <img src="/assets/logo.png" alt="logo">
+        </a>
+    </h1>
 
     {# 
     <form p-nav-item="center" action="/search/">
@@ -7,7 +11,7 @@
     </form>
     #}
 
-    <div p-nav-item="right">
+    <div p-nav-item="right" id="state">
         {% with current_user = online_user() %}
         {% if not current_user %}
         <a href="{{ url_for("views.login", uri=request.url) }}" p-button>Login</a>
@@ -17,7 +21,7 @@
         {% endwith %}
     </div>
 </div>
-<div class="header-menu header-nav" p-tip="bottom">
+<div class="header-menu header-nav" p-tip="bottom" id="navMenu">
     <ul p-menu="v large" id="listMenu">
         {% for category in all_categories() %}
         <li p-nav-item="current"><a href="{{ category.url }}">{{ category.name }}</a></li>
@@ -25,7 +29,7 @@
     </ul>
 </div>
 
-<div class="header-menu header-info" p-tip="bottom">
+<div class="header-menu header-info" p-tip="bottom" id="stateMenu">
     <ul p-menu="v large" id="infoMenu">
       <li><a href="{{ url_for("views.logout") }}">logout</a></li>
     </ul>
