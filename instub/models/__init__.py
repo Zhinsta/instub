@@ -3,7 +3,7 @@
 from instub.database import db, SurrogatePK, Model
 
 from user import iAdmin, User
-from media import Category, Worker, Media, WorkerCategory
+from media import Category, Worker, Media
 
 
 class SiteSetting(SurrogatePK, Model):
@@ -20,4 +20,4 @@ class SiteSetting(SurrogatePK, Model):
 
 
 
-__all__ = [iAdmin, User, Category, Worker, WorkerCategory, SiteSetting, Media]
+__all__ = [iAdmin, User, Category, Worker, SiteSetting, Media]

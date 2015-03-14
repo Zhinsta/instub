@@ -8,7 +8,7 @@ DB_USER = 'root'
 DB_DATEBASE = 'instub'
 DB_PASSWORD = ''
 
-SQLALCHEMY_DATABASE_URI = 'mysql://%s:@%s:%s/%s?charset=utf8' % (
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:@%s:%s/%s?charset=utf8' % (
     DB_USER, DB_HOST, DB_PORT, DB_DATEBASE)
 SECRET_KEY = 'Instub'
 

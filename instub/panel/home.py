@@ -164,15 +164,18 @@ class CategoryPanel(PanelBase):
 
 class WorkerPanel(PanelBase):
 
+    #column_list = ('uid', Category.name, 'username', 'profile_picture',
+    #               'status', 'created_time', 'updated_time')
     # Visible columns in the list view
     column_exclude_list = []
 
     # List of columns that can be sorted.
-    column_sortable_list = ('username', 'created_time',
+    column_sortable_list = ('uid', 'username', 'created_time',
                             'updated_time')
 
     # Rename 'title' columns to 'Post Title' in list view
     column_labels = dict(username='Username',
+                         category_id='Category name',
                          profile_picture='Avatar')
 
     column_searchable_list = ('username',  Category.name)
@@ -189,7 +192,11 @@ class WorkerPanel(PanelBase):
             url_for('user_view.profile', uid=model.uid),
             model.username))
 
+    def _show_category(self, context, model, name):
+        return Markup('<p>%s</p>' % model.category.name)
+
     column_formatters = {
+        'category_id': _show_category,
         'username': _show_user,
         'profile_picture': _show_pic,
     }

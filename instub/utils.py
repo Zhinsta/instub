@@ -137,7 +137,7 @@ def get_workers():
 
 
 def update_workers():
-    from instub.models import Category, Worker, WorkerCategory
+    from instub.models import Category, Worker
     workers = get_workers()
     for category_name in workers:
         category = Category.query.filter(Category.name == category_name).first()
@@ -147,11 +147,4 @@ def update_workers():
         for uid in uids:
             worker = Worker.query.filter(Worker.uid == uid).first()
             if not worker:
-                worker = Worker.create(uid=uid)
-            wc = (WorkerCategory.query
-                  .filter(WorkerCategory.worker_id == worker.id)
-                  .filter(WorkerCategory.category_id == category.id)
-                  .first())
-            if not wc:
-                WorkerCategory.create(worker_id=worker.id,
-                                      category_id=category.id)
+                worker = Worker.create(uid=uid, category_id=category.id)

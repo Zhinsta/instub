@@ -20,6 +20,12 @@ class Category(SurrogatePK, Model):
     def __unicode__(self):
         return self.name
 
+    workers = db.relationship(
+        'Worker', lazy='select', backref='category',
+        primaryjoin='Category.id==Worker.category_id',
+        foreign_keys='Worker.category_id',
+        uselist=True, passive_deletes='all')
+
     @hybrid_property
     def url(self):
         return url_for('category_view.category', name=self.name)
@@ -27,8 +33,7 @@ class Category(SurrogatePK, Model):
     def medias_query(self):
         query = (Media.query
                  .filter(Category.id == self.id)
-                 .filter(Category.id == WorkerCategory.category_id)
-                 .filter(Worker.id == WorkerCategory.worker_id)
+                 .filter(Category.id == Worker.category_id)
                  .filter(Worker.uid == Media.worker_id))
         return query
 
@@ -44,31 +49,16 @@ class Category(SurrogatePK, Model):
                   .all())
         return medias
 
-    @classmethod
-    def __declare_last__(cls):
-        cls.workers = db.relationship(
-            'Worker',
-            secondary=WorkerCategory.__table__,
-            backref=db.backref(
-                'categories',
-                innerjoin=True,
-                order_by=Worker.created_time.desc(),
-                lazy='dynamic',),
-            primaryjoin=cls.id == WorkerCategory.category_id,
-            secondaryjoin=WorkerCategory.worker_id == Worker.id,
-            order_by=WorkerCategory.created_time.desc(),
-            foreign_keys=[WorkerCategory.category_id, WorkerCategory.worker_id],
-            passive_deletes='all', lazy='dynamic')
-
 
 class Worker(SurrogatePK, Model):
 
     __tablename__ = 'worker'
 
     uid = db.Column(db.String(128), index=True, nullable=False, unique=True)
+    category_id = db.Column(db.String(128), index=True, nullable=True, server_default='0')
     username = db.Column(db.String(128), index=True, nullable=True)
     profile_picture = db.Column(db.String(255), nullable=True)
-    status = db.Column(db.String(64), nullable=False, index=True,
+    status = db.Column(db.String(64), nullable=True, index=True,
                        server_default='prepare')
     created_time = db.Column(db.DateTime(timezone=True),
                              index=True, nullable=False,
