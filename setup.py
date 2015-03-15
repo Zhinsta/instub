@@ -17,6 +17,7 @@ install_requires = [
     'gevent',
     'itsdangerous',
     'python-instagram',
+    'pymysql',
     'redis',
 ]
 

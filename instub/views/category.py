@@ -4,6 +4,7 @@ from flask import views
 from flask import Blueprint
 from flask import render_template
 
+from instub.errors import NotFound
 from instub.models import Category
 from instub.pager import Pager
 
@@ -14,8 +15,11 @@ class CategoryView(views.MethodView):
 
     def get(self, name):
         category = Category.query.filter(Category.name == name).first()
-        pager = Pager(category.medias_count())
-        medias = category.medias(limit=pager.per_page, offset=pager.offset)
+        if not category:
+            return NotFound('Category Not Found')
+        pager = Pager(category.medias_count(category.id))
+        medias = category.medias(category.id, limit=pager.per_page,
+                                 offset=pager.offset)
         return render_template('medias_list.html', pager=pager,
                                medias=medias, category=category)
 

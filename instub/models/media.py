@@ -30,19 +30,18 @@ class Category(SurrogatePK, Model):
     def url(self):
         return url_for('category_view.category', name=self.name)
 
-    def medias_query(self):
+    def medias_query(self, category_id):
         query = (Media.query
-                 .filter(Category.id == self.id)
-                 .filter(Category.id == Worker.category_id)
+                 .filter(Worker.category_id == category_id)
                  .filter(Worker.uid == Media.worker_id))
         return query
 
-    def medias_count(self):
-        query = self.medias_query()
+    def medias_count(self, category_id):
+        query = self.medias_query(category_id)
         return query.count()
 
-    def medias(self, limit=20, offset=0):
-        query = self.medias_query()
+    def medias(self, category_id, limit=20, offset=0):
+        query = self.medias_query(category_id)
         medias = (query
                   .order_by(Media.created_time.desc())
                   .offset(offset).limit(limit)
