@@ -49,6 +49,7 @@ class Category(SurrogatePK, Model):
     def medias(self, category_id, limit=20, offset=0):
         query = self.medias_query(category_id)
         medias = (query
+                  .order_by(Media.created_time.desc())
                   .offset(offset).limit(limit)
                   .all())
         return medias
