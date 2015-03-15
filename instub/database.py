@@ -6,12 +6,17 @@ utilities.
 import random
 from functools import wraps
 
+import redis
 import MySQLdb
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import String, TypeDecorator, Text
 from flask import json
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate
+
+from instub.settings import REDIS_URL
+
+redis = redis.StrictRedis.from_url(REDIS_URL)
 
 db = SQLAlchemy()
 migrate = Migrate()

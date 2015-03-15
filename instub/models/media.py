@@ -3,7 +3,7 @@
 from flask import url_for
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from instub.database import db, SurrogatePK, Model
+from instub.database import db, SurrogatePK, Model, redis
 
 
 class Category(SurrogatePK, Model):
@@ -37,13 +37,18 @@ class Category(SurrogatePK, Model):
         return query
 
     def medias_count(self, category_id):
+        key = 'media_count:%s' % category_id
+        count = redis.get(key)
+        if count:
+            return int(count)
         query = self.medias_query(category_id)
-        return query.count()
+        count = query.count()
+        redis.setex(key, 3600, str(count))
+        return count
 
     def medias(self, category_id, limit=20, offset=0):
         query = self.medias_query(category_id)
         medias = (query
-                  .order_by(Media.created_time.desc())
                   .offset(offset).limit(limit)
                   .all())
         return medias
@@ -93,7 +98,7 @@ class Media(Model):
 
     id = db.Column(db.String(128), index=True, primary_key=True,
                    autoincrement=False, nullable=False)
-    worker_id = db.Column(db.String(128), nullable=False, index=True)
+    worker_id = db.Column(db.String(128), nullable=False)
     low_resolution = db.Column(db.String(256), nullable=False)
     thumbnail = db.Column(db.String(256), nullable=False)
     standard_resolution = db.Column(db.String(256), nullable=False)
