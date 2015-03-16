@@ -665,7 +665,7 @@ textarea:focus::-webkit-input-placeholder {
 }
 [p-menu~="center"] {
   position: relative;
-  left: -50%;
+  left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
 }
