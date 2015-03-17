@@ -1,9 +1,15 @@
 # 使用方法
 
-> pip install -r requirements.txt
+1 pip install -r requirements.txt
 
-> python manage.py db migrate
+2 python manage.py db migrate
 
-> python manage.py db upgrade
+3 python manage.py db upgrade
 
-> python manage.py run
+4 python manage.py run
+
+# or
+
+buildout
+
+./bin/run
