@@ -25,3 +25,8 @@ public/node_modules
 
 # app
 instub/config_local.py
+
+# html
+instub/static/*.html
+instub/static/partials/
+
