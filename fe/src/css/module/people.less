@@ -1,0 +1,77 @@
+.people {
+    margin: 0 -5px;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    li {
+        position: relative;
+        float: left;
+        list-style: none;
+    }
+
+    .people-photo {
+        position: relative;
+        float: left;
+        width: 150px;
+        margin: 5px;
+        overflow: hidden;
+        color: inherit;
+        text-decoration: inherit;
+
+        img {
+            display: block;
+            width: 150px;
+            height: 150px;
+        }
+
+        span {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            padding: 0.25em 9px;
+            width: 100%;
+            display: none;
+            overflow: hidden;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            background-color: rgba(0, 0, 0, .6);
+            text-shadow: 1px 1px 1px #000;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        &:hover,
+        &:focus {
+            .text-nounderline();
+
+            span {
+                display: block;
+            }
+        }
+    }
+}
+
+
+@media (max-width: 480px) {
+    .people {
+        width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .people .people-photo {
+        width: 140px;
+        height: 140px;
+
+        img {
+            width: 140px;
+            height: 140px;
+        }
+    }
+}
+

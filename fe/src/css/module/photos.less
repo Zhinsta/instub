@@ -50,7 +50,9 @@
         color: inherit;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        &:hover {
+
+        &:hover,
+        &:focus {
             .text-nounderline();
         }
         img {
@@ -72,7 +74,9 @@
         box-sizing: border-box;
         a {
             color: inherit;
-            &:hover {
+
+            &:hover,
+            &:focus {
                 .text-nounderline();
             }
         }
@@ -90,16 +94,6 @@
         }
         .photo-info {
             display: block;
-        }
-    }
-
-    .more {
-        margin-top: 1em;
-        display: block;
-        text-align: center;
-
-        &:hover {
-            .text-nounderline();
         }
     }
 }
