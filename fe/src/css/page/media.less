@@ -1,10 +1,13 @@
 /*
  * list page style
  */
+@media-width: 640px;
+@media-height: 640px;
+
 #page-media {
     .media {
         .clearfix();
-        height: 640px;
+        height: @media-height;
     }
 
     .info {
@@ -13,6 +16,7 @@
 
     .media-l {
         float: left;
+        width: @media-width;
         height: 100%;
 
         img {
@@ -23,10 +27,11 @@
     .media-r {
         float: right;
         padding: 0 10px 0 20px;
-        width: 310px;
+        width: 340px;
         height: 100%;
         overflow: auto;
         background-color: @c-highlight-dark;
+        box-sizing: border-box;
 
         p {
         }
@@ -34,6 +39,28 @@
 
     .media-do {
         margin: 10px 0;
+    }
+}
+
+
+@media (max-width: 1000px) {
+    #page-media {
+        .media {
+            height: auto;
+        }
+
+        .media-l,
+        .media-r {
+            float: none;
+            margin: 0 auto;
+            max-width: @media-width;
+            width: 100%;
+
+        }
+
+        .media-r {
+            padding: 1em 10px;
+        }
     }
 }
 

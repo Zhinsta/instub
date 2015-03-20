@@ -1,18 +1,22 @@
-(function () {
+var $ = require('./lib/$');
 
-var g = function (id) {
-    return document.getElementById(id);
-};
+require('./lib/like')();
+require('./lib/follow')();
+
 var triggerByHover = function (trigger, target) {
-    trigger = g(trigger);
-    target = g(target);
+    trigger = $(trigger);
+    target = $(target);
+    if ((!trigger.nodeName && !trigger.length) || (!target.nodeName && !target.length)) {
+        return;
+    }
+
     var mouseOver = false;
-    trigger.addEventListener('mouseenter', function () {
+    trigger.on('mouseenter', function () {
         target.style.display = 'block';
         mouseOver = true;
     });
 
-    target.addEventListener('mouseenter', function () {
+    target.on('mouseenter', function () {
         mouseOver = true;
     });
 
@@ -25,11 +29,11 @@ var triggerByHover = function (trigger, target) {
         }, 250);
     };
 
-    trigger.addEventListener('mouseleave', mouseout);
-    target.addEventListener('mouseleave', mouseout);
+    trigger.on('mouseleave', mouseout);
+    target.on('mouseleave', mouseout);
 };
 
-triggerByHover('logo', 'navMenu');
-triggerByHover('state', 'stateMenu');
+triggerByHover('#logo', '#navMenu');
+triggerByHover('#state', '#stateMenu');
 
-})();
+
