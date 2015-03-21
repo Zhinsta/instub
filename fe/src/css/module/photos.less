@@ -98,11 +98,27 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 610px) and (min-width: 321px) {
+    .photos .photo {
+        width: 50%;
+        margin: 0 0 10px;
+        box-sizing: border-box;
+
+        &:nth-child(2n+1) {
+            padding-right: 5px;
+        }
+        &:nth-child(2n) {
+            padding-left: 5px;
+        }
+    }
+}
+
+@media (max-width: 320px) {
     .photos .photo {
         float: none;
         width: 300px;
         margin: 0 auto 1em;
+        padding: 0;
     }
     .photos .photo.tantropmi {
         height: 300px;
