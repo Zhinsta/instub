@@ -75,12 +75,6 @@ class Worker(SurrogatePK, Model):
     def __unicode__(self):
         return self.username if self.username else 'Unkonw'
 
-    medias = db.relationship(
-        'Media', lazy='select', backref='worker',
-        primaryjoin='Worker.uid==Media.worker_id',
-        foreign_keys='Media.worker_id',
-        uselist=True, passive_deletes='all')
-
 
 class WorkerCategory(Model):
 
@@ -110,3 +104,9 @@ class Media(Model):
     @hybrid_property
     def url(self):
         return url_for('media_view.media', id=self.id)
+
+    worker = db.relationship(
+        'Worker',
+        primaryjoin='Worker.uid==Media.worker_id',
+        foreign_keys='Worker.uid',
+        uselist=False, passive_deletes='all')

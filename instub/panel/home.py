@@ -9,10 +9,14 @@ from jinja2 import Markup
 from flask import url_for
 from flask import request
 from flask import redirect
+from flask import flash
 from flask.ext.login import (login_required, current_user,
                              login_user, logout_user)
 from flask.ext.admin import helpers, expose, AdminIndexView
+from flask.ext.admin.babel import gettext, ngettext, lazy_gettext
 from flask.ext.admin.contrib import sqla
+from flask.ext.admin.contrib.sqla.tools import get_query_for_ids
+from flask.ext.admin.actions import action
 
 from instagram import InstagramAPI
 from instagram import InstagramAPIError
@@ -27,6 +31,26 @@ from instub.utils import update_workers
 from .forms import LoginForm
 
 tasks = Queue(maxsize=3)
+
+
+def get_medias(uid, access_token, min_id=None):
+    print uid, access_token, min_id
+    try:
+        api = InstagramAPI(access_token=access_token)
+        medias_list = []
+        next_ = True
+        while next_:
+            next_url = None if next_ is True else next_
+            medias, next_ = api.user_recent_media(
+                user_id=uid, with_next_url=next_url,
+                min_id=min_id)
+            medias_list.extend(medias)
+        return medias_list
+    except InstagramAPIError, e:
+        if e.error_type in ['APINotAllowedError-you',
+                            'APINotFoundError-this']:
+            delete_worker(uid)
+        return InternalServerError(u'服务器暂时出问题了')
 
 
 class PanelBase(sqla.ModelView):
@@ -65,24 +89,6 @@ class PanelIndex(AdminIndexView):
         logout_user()
         return redirect(url_for('.index'))
 
-    def _get_medias(self, uid, access_token, min_id=None):
-        try:
-            api = InstagramAPI(access_token=access_token)
-            medias_list = []
-            next_ = True
-            while next_:
-                next_url = None if next_ is True else next_
-                medias, next_ = api.user_recent_media(
-                    user_id=uid, with_next_url=next_url,
-                    min_id=min_id)
-                medias_list.extend(medias)
-            return medias_list
-        except InstagramAPIError, e:
-            if e.error_type in ['APINotAllowedError-you',
-                                'APINotFoundError-this']:
-                delete_worker(uid)
-            return InternalServerError(u'服务器暂时出问题了')
-
     def _update_worker(self):
         try:
             task = tasks.get(timeout=1)
@@ -93,7 +99,7 @@ class PanelIndex(AdminIndexView):
             if not access_token:
                 return
             min_id = get_last_media(uid=uid)
-            medias = self._get_medias(uid=uid, access_token=access_token,
+            medias = get_medias(uid=uid, access_token=access_token,
                                       min_id=min_id)
             if medias:
                 insert_medias(medias[:-1])
@@ -116,7 +122,7 @@ class PanelIndex(AdminIndexView):
         set_worker_prepare()
         gevent.spawn(self._put_tasks, total=total)
         fs = []
-        for i in xrange(0, min(100, total)):
+        for i in xrange(0, min(1, total)):
             g = gevent.spawn(self._update_worker)
             fs.append(g)
         gevent.joinall(fs)
@@ -126,6 +132,7 @@ class PanelIndex(AdminIndexView):
     def update_workers(self):
         update_workers()
         return super(PanelIndex, self).index()
+
 
 class SitePanel(PanelBase):
     pass
@@ -167,7 +174,7 @@ class WorkerPanel(PanelBase):
     #column_list = ('uid', Category.name, 'username', 'profile_picture',
     #               'status', 'created_time', 'updated_time')
     # Visible columns in the list view
-    column_exclude_list = []
+    column_exclude_list = ['category_id']
 
     # List of columns that can be sorted.
     column_sortable_list = ('uid', 'username', 'created_time',
@@ -175,7 +182,6 @@ class WorkerPanel(PanelBase):
 
     # Rename 'title' columns to 'Post Title' in list view
     column_labels = dict(username='Username',
-                         category_id='Category name',
                          profile_picture='Avatar')
 
     column_searchable_list = ('username',  Category.name)
@@ -192,11 +198,36 @@ class WorkerPanel(PanelBase):
             url_for('user_view.profile', uid=model.uid),
             model.username))
 
-    def _show_category(self, context, model, name):
-        return Markup('<p>%s</p>' % model.category.name)
+    def _update_worker(self, uid):
+        access_token = get_token(fetchone=True)
+        if not access_token:
+            return
+        min_id = get_last_media(uid=uid)
+        medias = get_medias(uid=uid, access_token=access_token,
+                                  min_id=min_id)
+        if medias:
+            insert_medias(medias[:-1])
+            if isinstance(medias, list):
+                worker = medias[0].user
+                update_worker(uid, worker.username, worker.profile_picture)
+        set_worker_done(uid)
+
+    @action('refresh', lazy_gettext('Refresh'),
+            lazy_gettext(u'手动更新，不要超过5个'))
+    def action_refresh(self, ids):
+        try:
+            query = get_query_for_ids(self.get_query(), self.model, ids)
+            for worker in query.all():
+                self._update_worker(worker.uid)
+            count = query.count()
+            flash(ngettext('Record was successfully refreshed.',
+                           '%(count)s records were successfully refreshed.',
+                           count, count=count))
+        except Exception as ex:
+            flash(gettext('Failed to refresh records. %(error)s',
+                          error=str(ex)), 'error')
 
     column_formatters = {
-        'category_id': _show_category,
         'username': _show_user,
         'profile_picture': _show_pic,
     }

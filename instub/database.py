@@ -218,8 +218,8 @@ def get_token(data, fetchone=True):
     return
 
 
-@mysql(sql='select uid from worker where status="prepare" '
-       'order by updated_time limit 1')
+# 从最老的开始更新 忽略状态
+@mysql(sql='select uid from worker order by updated_time limit 1')
 def get_fresh_worker(data, fetchone=True):
     if data:
         uid = data[0]
