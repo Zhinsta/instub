@@ -23,7 +23,7 @@ class MediaView(views.MethodView):
         media, likes = media.get(), likes.get()
         return media, likes
 
-    def _get_errors(self, media, likes):
+    def _get_errors(self, media, likes, id):
         errors = get_errors(media, likes)
         if errors:
             if any([e.error_type == 'APINotAllowedError' for e in errors]):
@@ -49,7 +49,7 @@ class MediaView(views.MethodView):
     def get(self, id):
         api = InstagramAPI(access_token=request.access_token)
         media, likes = self._get_meida(id, api)
-        errors = self._get_errors(media, likes)
+        errors = self._get_errors(media, likes, id)
         if errors:
             return errors
 
