@@ -6,7 +6,6 @@ from gevent.util import wrap_errors
 import itsdangerous
 from flask import views
 from flask import request
-from flask import redirect
 from flask import url_for
 from flask import session
 from flask import Blueprint
@@ -14,8 +13,8 @@ from flask import render_template
 from instagram import InstagramAPI
 from instagram import InstagramAPIError
 
-from instub.errors import InternalServerError
-from instub.utils import has_login, login_required
+from instub.errors import InternalServerError, NotFound
+from instub.utils import spawn, login_required, open_visit, isfollow, get_errors
 
 signer = itsdangerous.URLSafeSerializer('fbxrinima')
 
@@ -24,6 +23,7 @@ blueprint = Blueprint('user_view', __name__)
 
 class ProfileView(views.MethodView):
 
+    @open_visit
     @login_required
     def get(self, uid=None):
         next_url = request.args.get('next_url', None)
@@ -47,10 +47,9 @@ class ProfileView(views.MethodView):
                   if isinstance(e, InstagramAPIError)]
         if errors:
             if any([e.error_type == 'APINotAllowedError' for e in errors]):
-                return render('profile-noauth.html', uid=uid)
+                return render_template('profile-noauth.html', uid=uid)
             if any([e.error_type == 'APINotFoundError' for e in errors]):
-                return notfound(u'用户不存在')
-            app.logger.error([str(e) for e in errors])
+                return NotFound(u'User Not Found')
             return InternalServerError('Internal Server Error')
 
         next_url = feeds[1] if feeds else None
@@ -95,8 +94,7 @@ class FollowBaseView(object):
         user, users, isfollows = user.get(), users.get(), isfollows.get()
         errors = get_errors(user, users, isfollows)
         if errors:
-            app.logger.error([str(e) for e in errors])
-            return notfound(u'服务器暂时出问题了')
+            return InternalServerError('Internal Server Error')
 
         next_url = users[1]
         next_url = signer.dumps(next_url) if next_url else next_url

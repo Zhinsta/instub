@@ -195,6 +195,8 @@ def yield_param(param):
 def execute_sql(sql, param=None, op='query'):
 
     def _execute(sql, param=None, op=op):
+        if op=='insert':
+            print param
         @mysql(sql, param=param, op=op)
         def execute(data):
             return data

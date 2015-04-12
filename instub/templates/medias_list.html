@@ -16,7 +16,7 @@
                 <img src="{{ photo.low_resolution|image }}" alt="" />
             </a>
             {% with author = photo.worker %}
-            <a href="#" class="photo-author">
+			<a href="{{ url_for('user_view.profile', uid=author.uid) }}" class="photo-author">
                 <img src="{{ author.profile_picture }}" alt="{{ author.username }}" width="32" height="32" />
                 {{ author.username }}
             </a>

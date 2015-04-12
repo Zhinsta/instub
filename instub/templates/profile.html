@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}
+{{ user.full_name }} @{{ user.username }}
+{{ super() }}
+{% endblock %}
+{% block body_class %}page-profile{% endblock %}
+{% block content %}
+<div class="main">
+	<div class="userprofile">
+		<div class="userprofile-info">
+			<div class="info">
+				<a class="info-pic" href="{{ url_for('user_view.profile', uid=user.id) }}">
+					<img src="{{ user.profile_picture}}" alt="{{ user.full_name }} @{{ user.username }} on instagram">
+				</a>
+				<h1><a href="{{ url_for('user_view.profile', uid=user.id) }}">{{ user.username }}</a></h1>
+				<div class="info-txt">
+					<a href="###">Following {{ user.counts.follows}}</a> <a href="###">Follower {{ user.counts.followed_by}}</a>
+				</div>
+				<div class="info-desc">{{ user.bio }}</div>
+			</div>
+		</div>
+		<div class="userprofile-follow">
+			<a p-button="large ripple primary" href="###" class="jsFollow" data-ukey="{{ user.id }}" data-action="follow">Follow</a>
+		</div>
+	</div>
+	<div class="photos">
+		{% for photo in feeds %}
+		<div class="photo">
+			<a class="photo-pic" href="">
+				<img src="{{ photo.images.low_resolution.url }}" alt="{{ user.full_name }} @{{ user.username }} on instagram">
+			</a>
+			<a class="photo-author" href="">
+				<img src="{{ user.profile_picture }}" alt="{{ user.full_name }} @{{ user.username }} on instagram" width="32" height="32">
+                {{ user.username }}
+			</a>
+			<span class="photo-info">
+				{{ photo.created_time|time_since }}
+				{#<a href="javascript:void(0);" class="jsLove3" data-mid="{{ photo.id }}"></a>#}
+			</span>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
+
+
