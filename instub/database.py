@@ -195,8 +195,9 @@ def yield_param(param):
 def execute_sql(sql, param=None, op='query'):
 
     def _execute(sql, param=None, op=op):
-        if op=='insert':
+        if op == 'insert':
             print param
+
         @mysql(sql, param=param, op=op)
         def execute(data):
             return data
@@ -214,6 +215,14 @@ def execute_sql(sql, param=None, op='query'):
 
 @mysql(sql='select access_token from user order by rand() limit 1')
 def get_token(data, fetchone=True):
+    if data:
+        token = data[0]
+        return token
+    return
+
+
+@mysql(sql='select access_token from user where name="instub1"')
+def get_instub_token(data, fetchone=True):
     if data:
         token = data[0]
         return token
@@ -255,9 +264,12 @@ def delete_worker(uid):
     execute_sql(sql, op='delete')
 
 
-def get_last_media(uid, fetchone=True):
-    sql = ('select id from media where worker_id="%s" '
-           'order by created_time desc limit 1' % uid)
+def get_last_media(uid=None, fetchone=True):
+    if uid:
+        sql = ('select id from media where worker_id="%s" '
+               'order by created_time desc limit 1' % uid)
+    else:
+        sql = ('select id from media order by created_time desc limit 1')
 
     @mysql(sql=sql)
     def execute(data, fetchone=True):

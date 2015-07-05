@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import gevent
-from gevent.queue import Queue, Empty
 from gevent import monkey
 gevent.monkey.patch_all()
 
@@ -10,7 +9,7 @@ from flask import url_for
 from flask import request
 from flask import redirect
 from flask import flash
-from flask.ext.login import (login_required, current_user,
+from flask.ext.login import (current_user,
                              login_user, logout_user)
 from flask.ext.admin import helpers, expose, AdminIndexView
 from flask.ext.admin.babel import gettext, ngettext, lazy_gettext
@@ -21,35 +20,33 @@ from flask.ext.admin.actions import action
 from instagram import InstagramAPI
 from instagram import InstagramAPIError
 
-from instub.database import (db, get_fresh_worker, get_last_media,
+from instub.database import (db, get_last_media, get_instub_token,
                              get_token, insert_medias, set_worker_done,
-                             set_worker_prepare, update_worker, delete_worker)
+                             set_worker_prepare, update_worker)
 from instub.models import Category, Worker, User, Media
-from instub.errors import NotFound, InternalServerError
+from instub.errors import InternalServerError
 from instub.utils import update_workers
 
 from .forms import LoginForm
 
-tasks = Queue(maxsize=3)
 
-
-def get_medias(uid, access_token, min_id=None):
-    print uid, access_token, min_id
+def get_instub_feed(access_token, min_id=None):
     try:
         api = InstagramAPI(access_token=access_token)
         medias_list = []
         next_ = True
         while next_:
             next_url = None if next_ is True else next_
-            medias, next_ = api.user_recent_media(
-                user_id=uid, with_next_url=next_url,
-                min_id=min_id)
+            medias, next_ = api.user_media_feed(with_next_url=next_url,
+                                                min_id=min_id)
+            print next_
             medias_list.extend(medias)
         return medias_list
     except InstagramAPIError, e:
+        print e
         if e.error_type in ['APINotAllowedError-you',
                             'APINotFoundError-this']:
-            delete_worker(uid)
+            pass
         return InternalServerError(u'服务器暂时出问题了')
 
 
@@ -89,43 +86,17 @@ class PanelIndex(AdminIndexView):
         logout_user()
         return redirect(url_for('.index'))
 
-    def _update_worker(self):
-        try:
-            task = tasks.get(timeout=1)
-            uid = get_fresh_worker(fetchone=True)
-            if not uid:
-                return
-            access_token = get_token(fetchone=True)
-            if not access_token:
-                return
-            min_id = get_last_media(uid=uid)
-            medias = get_medias(uid=uid, access_token=access_token,
-                                      min_id=min_id)
-            if medias:
-                insert_medias(medias[:-1])
-                if isinstance(medias, list):
-                    worker = medias[0].user
-                    update_worker(uid, worker.username, worker.profile_picture)
-            set_worker_done(uid)
-            gevent.sleep(0)
-        except Empty:
-            print 'ALL DONE'
-
-    def _put_tasks(self, total):
-        for i in xrange(0, total):
-            tasks.put(i)
-        print 'total: %s DONE' % total
-
     @expose('/update_workers_media')
     def update_workers_media(self):
-        total = Worker.query.count()
-        set_worker_prepare()
-        gevent.spawn(self._put_tasks, total=total)
-        fs = []
-        for i in xrange(0, min(1, total)):
-            g = gevent.spawn(self._update_worker)
-            fs.append(g)
-        gevent.joinall(fs)
+        access_token = get_instub_token(fetchone=True)
+        if not access_token:
+            return
+        min_id = get_last_media()
+        print min_id
+        medias = get_instub_feed(access_token=access_token, min_id=min_id)
+        print len(medias)
+        if medias:
+            insert_medias(medias[:-1])
         return super(PanelIndex, self).index()
 
     @expose('/update_workers')

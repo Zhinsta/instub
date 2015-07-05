@@ -39,14 +39,14 @@ class OAuthCodeView(views.MethodView):
         user = (User.query
                 .filter_by(id=access_token[1]['id']).first())
         if user:
-            user.access_token = access_token[0]
-            user.name = access_token[1]['username']
-            user.avatar = access_token[1]['profile_picture']
+            user.update(access_token=access_token[0],
+                        name=access_token[1]['username'],
+                        avatar=access_token[1]['profile_picture'])
         else:
             user = User.create(id=access_token[1]['id'],
-                                name=access_token[1]['username'],
-                             avatar=access_token[1]['profile_picture'],
-                             access_token=access_token[0])
+                               name=access_token[1]['username'],
+                               avatar=access_token[1]['profile_picture'],
+                               access_token=access_token[0])
             redirect_url = url_for('views.welcome')
         session.permanent = True
         session['uid'] = user.id
