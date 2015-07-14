@@ -51,6 +51,7 @@ class Pager(object):
 
     def __init__(self, total_count, per_page=20):
         self.per_page = per_page
+        self.limit = per_page
         self.total_count = total_count
         self.url = request.base_url
         self.current_page = int(request.args.get('page', 1))

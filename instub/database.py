@@ -192,11 +192,27 @@ def yield_param(param):
         yield result
 
 
+def filter_medias(p):
+    mids = [m[0] for m in p]
+    mids = "','".join(mids)
+    sql = "select id from media where id in ('%s')" % mids
+
+    @mysql(sql)
+    def execute(data):
+        return data
+
+    exists_mids = execute()
+    exists_mids = set([m[0] for m in exists_mids])
+    new_param = []
+    for param in p:
+        if param[0] not in exists_mids:
+            new_param.append(param)
+    return new_param
+
+
 def execute_sql(sql, param=None, op='query'):
 
     def _execute(sql, param=None, op=op):
-        if op == 'insert':
-            print param
 
         @mysql(sql, param=param, op=op)
         def execute(data):
@@ -205,7 +221,10 @@ def execute_sql(sql, param=None, op='query'):
 
     if isinstance(param, list):
         for p in yield_param(param):
-            _execute(sql, param=p, op=op)
+            if op == 'insert':
+                p = filter_medias(p)
+                if p:
+                    _execute(sql, param=p, op=op)
     elif isinstance(param, tuple):
         _execute(sql, param=param, op=op)
     else:
