@@ -30,6 +30,13 @@ class Category(SurrogatePK, Model):
     def url(self):
         return url_for('category_view.category', name=self.name)
 
+    @hybrid_property
+    def cover(self):
+        media = self.medias(self.id, limit=1)
+        if media:
+            return media[0].thumbnail
+        return ''
+
     def medias_query(self, category_id):
         query = (Media.query
                  .filter(Worker.category_id == category_id)

@@ -11,6 +11,8 @@ from instub.panel import iadmin
 from instub.models import iAdmin
 from instub.errors import register_errorhandlers
 
+import v1
+
 app = Flask(__name__)
 
 app.config.from_pyfile(os.path.join('settings.py'))
@@ -39,6 +41,7 @@ def register_blueprint(app):
                       'instub.views.category_blueprint']
     for blueprint in blueprint_list:
         app.register_blueprint(import_string(blueprint))
+    app.register_blueprint(v1.bp, url_prefix='/v1')
     return app
 
 

@@ -1,0 +1,146 @@
+swagger: '2.0'
+info:
+    title: Instub API
+    version: '1.0.0'
+schemes:
+    - http
+basePath:
+    /v1
+consumes:
+    - application/json
+profuces:
+    - application/json
+definitions:
+    Category:
+        type: object
+        description: media category
+        required:
+            - name
+            - key
+            - cover
+        properties:
+            name:
+                type: string
+                description: category name
+            key:
+                type: string
+                description: category key
+            cover:
+                type: string
+                description: cover
+    Media:
+        type: object
+        description: media
+        required:
+            - id
+            - worker_id
+        properties:
+            id:
+                type: string
+                description: media id
+            worker_id:
+                type: string
+                description: worker_id
+            low_resolution:
+                type: string
+                description: low_resolution
+            thumbnail:
+                type: string
+                description: thumbnail
+            standard_resolution:
+                type: string
+                description: standard_resolution
+            created_time:
+                format: datetime
+                type: string
+    Error:
+        properties:
+            code:
+                type: integer
+                format: int32
+            message:
+                type: string
+            fields_:
+                type: string
+parameters:
+    key:
+        description: category key
+        name: category_key
+        in: path
+        required: true
+        type: string
+    key_in_query:
+        description: category key
+        name: category_key
+        in: query
+        required: true
+        type: string
+    page:
+        description: page number
+        name: page
+        in: query
+        required: false
+        default: 1
+        type: string
+    per_page:
+        description: per page number
+        name: per_page
+        in: query
+        required: false
+        default: 20
+        type: string
+paths:
+    /categories:
+        get:
+            summary: media category info
+            description: media category info
+            tags: [category]
+            operationId:
+                category
+            responses:
+                200:
+                    description: category list
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/Category'
+                default:
+                    description: Unexpected error
+                    schema:
+                        $ref: '#/definitions/Error'
+    /categories/{key}:
+        get:
+            summary: media category info
+            description: media category info
+            tags: [category]
+            parameters:
+                - $ref: '#/parameters/key'
+            responses:
+                200:
+                    description: category info
+                    schema:
+                        $ref: '#/definitions/Category'
+                default:
+                    description: Unexpected error
+                    schema:
+                        $ref: '#/definitions/Error'
+    /medias:
+        get:
+            summary: media info
+            description: media info
+            tags: [category]
+            parameters:
+                - $ref: '#/parameters/key_in_query'
+                - $ref: '#/parameters/page'
+                - $ref: '#/parameters/per_page'
+            responses:
+                200:
+                    description: media info
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/Media'
+                default:
+                    description: Unexpected error
+                    schema:
+                        $ref: '#/definitions/Error'

@@ -8,3 +8,5 @@ Flask_WTF==0.10.3
 Flask-Script==2.0.5
 Flask-Admin==1.0.9
 PyMySQL==0.6.6
+flask_restful
+jsonschema
