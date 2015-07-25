@@ -10,6 +10,7 @@ install_requires = [
     'wtforms==1.0.5',
     'flask-admin',
     'flask-restful',
+    'jsonschema',
     'flask-sqlalchemy',
     'flask-migrate',
     'flask-wtf',
