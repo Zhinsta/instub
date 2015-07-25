@@ -37,6 +37,7 @@ def register_blueprint(app):
     blueprint_list = ['instub.views.blueprint',
                       'instub.views.user_blueprint',
                       'instub.views.media_blueprint',
+                      'instub.views.tag_blueprint',
                       'instub.views.sitemap_blueprint',
                       'instub.views.category_blueprint']
     for blueprint in blueprint_list:

@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %} {{ tag.name }} | {{ super() }} {% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/index.css"/>
+    {{ super() }}
+{% endblock %}
+{% block body_class %}page-list{% endblock %}
+
+{% block content %}
+<h2>{{ tag.name }}</h2>
+    <div class="photos" id="photoList">
+      {% for photo in media %}
+        <div class="photo">
+            <a href="{{ url_for('media_view.media', id=photo.id) }}" class="photo-pic">
+                <img src="{{ photo.images.low_resolution.url }}" alt="" />
+            </a>
+			<a href="{{ url_for('user_view.profile', uid=photo.user.id) }}" class="photo-author">
+                <img src="{{ photo.user.profile_picture }}" alt="{{ photo.user.username }}" width="32" height="32" />
+                {{ photo.user.username }}
+            </a>
+            <span class="photo-info">
+              {{ photo.created_time|time_since }}
+              <a href="javascript:void(0);" class="jsLove3" data-mid="{{ photo.id}}"></a>
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -31,11 +31,11 @@
                     <span class="media-place"></span>:
 					{{ media.caption.text }}<br/>
 					{% for tag in (media.tags or []) %}
-					<a href="#" class="tag">#{{ tag.name }}</a>&nbsp;
+					<a href="{{ url_for('tag_view.detail', name=tag.name) }}" class="tag">#{{ tag.name }}</a>&nbsp;
 					{% endfor %}
                     <br/>
 					{% for like in likes %}
-					<a href="#">{{ like.username }}</a>
+					<a href="{{ url_for("user_view.profile", uid=like.id) }}">{{ like.username }}</a>
 					{% endfor %}
                     等人赞过
                 </div>
@@ -44,7 +44,7 @@
                     <ul>
                         {% for comment in media.comments %}
                         <li>
-                            <a href="" title="{{ comment.user.username }}" data-mid="{{ media.id }}" data-cid="{{comment.id}}">
+                            <a href="{{ url_for("user_view.profile", uid=comment.user.id) }}" title="{{ comment.user.username }}" data-mid="{{ media.id }}" data-cid="{{comment.id}}">
                                 <img width="32" height="32" src="{{ comment.user.profile_picture }}" alt="{{ comment.user.full_name }}">
                             </a>
                             <div class="comment">

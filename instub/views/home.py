@@ -8,7 +8,10 @@ from instub.models import User, Category
 
 class HomeView(views.MethodView):
     def get(self):
-        categories = Category.query.order_by(Category.sort_score.desc()).all()
+        categories = (Category.query
+                      .filter(Category.sort_score > 0)
+                      .order_by(Category.sort_score.desc())
+                      .all())
         return render_template('home.html', categories=categories)
 
 

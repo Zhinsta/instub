@@ -99,7 +99,10 @@ def get_errors(*rs):
 
 def all_categories():
     from instub.models import Category
-    categories = Category.query.order_by(Category.sort_score.desc()).all()
+    categories = (Category.query
+                  .filter(Category.sort_score > 0)
+                  .order_by(Category.sort_score.desc())
+                  .all())
     return categories
 
 
